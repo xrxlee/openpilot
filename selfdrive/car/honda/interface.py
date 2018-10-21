@@ -306,9 +306,10 @@ class CarInterface(object):
       #ret.steerKpV, ret.steerKiV = [[0.5], [0.3]]   #model: OS 3%, risetime 3.5s
       #ret.steerKpV, ret.steerKiV = [[0.8], [0.23]]  #model: OS 5%, risetime 3s
       #ret.steerKpV, ret.steerKiV = [[0.8], [0.3]]   #model: OS 2%, risetime 3.8s 
-      #ret.steerKpV, ret.steerKiV = [[1], [0.14]]    #model: OS 18%, risetime 2s - Large kP
-      #ret.steerKpV, ret.steerKiV = [[2], [0.24]]    #model: OS 0%, risetime 3s - Large kP
-      #ret.steerKpV, ret.steerKiV = [[2], [0.21]]    #model: OS 3%, risetime 2.3s - Large kP
+      #ret.steerKpV, ret.steerKiV = [[1], [0.14]]    #model: OS 18%, risetime 2s - CAUTION Large kP
+      #ret.steerKpV, ret.steerKiV = [[1.5], [0.2]]    #model: OS 5%, risetime 2.3s - CAUTION Large kP
+      #ret.steerKpV, ret.steerKiV = [[2], [0.24]]    #model: OS 0%, risetime 3s - CAUTION Large kP
+      #ret.steerKpV, ret.steerKiV = [[2], [0.21]]    #model: OS 3%, risetime 2.3s - CAUTION Large kP
       ret.longitudinalKpBP = [0., 5., 35.]
       ret.longitudinalKpV = [1.2, 0.8, 0.5]
       ret.longitudinalKiBP = [0., 35.]
