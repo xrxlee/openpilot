@@ -308,14 +308,14 @@ class CarInterface(object):
       #tire_stiffness_factor = 0.444 # not optimized yet  
       tire_stiffness_factor = 0.82  # trying same as odyssey
       #ret.steerKpV, ret.steerKiV = [[0.38], [0.11]]  #original model: OS 30%, risetime: 1.75s, Max Output 0.8 of 1  
-      ret.steerKpV, ret.steerKiV = [[0.38], [0.23]]  #model: OS 10%, risetime: 2.75s
+      #ret.steerKpV, ret.steerKiV = [[0.38], [0.23]]  #model: OS 10%, risetime: 2.75s -RESULT: Slight oscillations but tight turns are better and left lane hug gone, Right lane hug good.  Better than default
       #ret.steerKpV, ret.steerKiV = [[0.38], [0.3]]  #model: OS 5%, risetime 3.5s
       #ret.steerKpV, ret.steerKiV = [[0.38], [0.25]] #model: OS 7%, risetime 3s
       #ret.steerKpV, ret.steerKiV = [[0.38], [0.35]] #model: OS 2%, risetime 4s
-      #ret.steerKpV, ret.steerKiV = [[0.5], [0.23]]  #model: OS 8%, risetime 2.75s
+      ret.steerKpV, ret.steerKiV = [[0.5], [0.23]]  #model: OS 8%, risetime 2.75s  -RESULT:  Held tight high speed turn better and less oscillation than 0.38, 0.23 and default.  Stayed center on fast lane with barriers to left.  Best so far.  Solid drive.
       #ret.steerKpV, ret.steerKiV = [[0.5], [0.3]]   #model: OS 3%, risetime 3.5s
       #ret.steerKpV, ret.steerKiV = [[0.8], [0.23]]  #model: OS 5%, risetime 3s
-      #ret.steerKpV, ret.steerKiV = [[0.8], [0.3]]   #model: OS 2%, risetime 3.8s 
+      #ret.steerKpV, ret.steerKiV = [[0.8], [0.3]]   #model: OS 2%, risetime 3.8s  -RESULT: hugging to the left lane with barriers - stronger response.  Jiggles the wheel strongly coming out of tight turn indicating kP probably too high      
       #ret.steerKpV, ret.steerKiV = [[1], [0.14]]    #model: OS 18%, risetime 2s - CAUTION Large kP
       #ret.steerKpV, ret.steerKiV = [[1.5], [0.2]]    #model: OS 5%, risetime 2.3s - CAUTION Large kP
       #ret.steerKpV, ret.steerKiV = [[2], [0.24]]    #model: OS 0%, risetime 3s - CAUTION Large kP
