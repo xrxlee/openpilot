@@ -301,10 +301,9 @@ class CarInterface(object):
       #ret.steerKpV, ret.steerKiV = [[0.38], [0.3]]  #model: OS 5%, risetime 3.5s  - NOT TESTED
       #ret.steerKpV, ret.steerKiV = [[0.38], [0.25]] #model: OS 7%, risetime 3s    - NOT TESTED
       #ret.steerKpV, ret.steerKiV = [[0.38], [0.35]] #model: OS 2%, risetime 4s    - NOT TESTED
-      ret.steerKpV, ret.steerKiV = [[0.5], [0.23]]   #model: OS 8%, risetime 2.75s - RESULT: Best result so far. Great centering on fast turns. Stayed center on fast lane. 
-      #ret.steerKpV, ret.steerKiV = [[0.5], [0.24]]  #tweaking optimal result
-      #ret.steerKpV, ret.steerKiV = [[0.5], [0.25]]  #tweaking optimal result
-      #ret.steerKpV, ret.steerKiV = [[0.6], [0.24]]  #tweaking optimal result
+      ret.steerKpV, ret.steerKiV = [[0.5], [0.22]]   #tweaking optimal result      - RESULT: Seems to fix slow / fast lane hug!
+      #ret.steerKpV, ret.steerKiV = [[0.5], [0.23]]  #model: OS 8%, risetime 2.75s - RESULT: Great centering on fast turns. Fixes fast lane but slow lane still hugs.
+      #ret.steerKpV, ret.steerKiV = [[0.5], [0.24]]  #tweaking optimal result      - RESULT: Does not fix slow lane hug
       #ret.steerKpV, ret.steerKiV = [[0.5], [0.3]]   #model: OS 3%, risetime 3.5s  - NOT TESTED
       #ret.steerKpV, ret.steerKiV = [[0.8], [0.23]]  #model: OS 5%, risetime 3s    - NOT TESTED
       #ret.steerKpV, ret.steerKiV = [[0.8], [0.3]]   #model: OS 2%, risetime 3.8s  - RESULT: Fast lane left hugging recurrence. Wheel jiggles after fast turn.     
@@ -313,7 +312,7 @@ class CarInterface(object):
       #ret.steerKpV, ret.steerKiV = [[2], [0.24]]    #model: OS 0%, risetime 3s    - NOT TESTED - CAUTION Large kP
       #ret.steerKpV, ret.steerKiV = [[2], [0.21]]    #model: OS 3%, risetime 2.3s  - NOT TESTED - CAUTION Large kP
       #ret.steerKf = 0.00009 # - NOT TESTED
-      #ret.steerKf = 0.00012 # - NOT TESTED
+      #ret.steerKf = 0.00012 # - NOT TESTED - RESULT: 0.5,0.23 makes fast lane hug left side 
       #ret.steerKf = 0.00015 # - NOT TESTED
       #ret.steerKf = 0.00018 # - NOT TESTED
       #ret.steerKf = 0.00021 # - NOT TESTED
