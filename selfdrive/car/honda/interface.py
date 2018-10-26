@@ -301,7 +301,9 @@ class CarInterface(object):
       #ret.steerKpV, ret.steerKiV = [[0.38], [0.3]]  #model: OS 5%, risetime 3.5s  - NOT TESTED
       #ret.steerKpV, ret.steerKiV = [[0.38], [0.25]] #model: OS 7%, risetime 3s    - NOT TESTED
       #ret.steerKpV, ret.steerKiV = [[0.38], [0.35]] #model: OS 2%, risetime 4s    - NOT TESTED
-      ret.steerKpV, ret.steerKiV = [[0.5], [0.22]]   #tweaking optimal result      - RESULT: Seems to fix slow / fast lane hug!
+      #ret.steerKpV, ret.steerKiV = [[0.5], [0.15]]  #@rickbias suggestion         - RESULT: Fast lane left side bias ok.  Fast turn centering ok.  Slow lane hugs right. 
+      #ret.steerKpV, ret.steerKiV = [[0.6], [0.18]]  #@rickbias suggestion         - RESULT: Fast lane left side hug.  Fast turn ok.  Slow lane hugs right.
+      ret.steerKpV, ret.steerKiV = [[0.5], [0.22]]  #tweaking optimal result     - RESULT: Seems to fix slow / fast lane hug!
       #ret.steerKpV, ret.steerKiV = [[0.5], [0.23]]  #model: OS 8%, risetime 2.75s - RESULT: Great centering on fast turns. Fixes fast lane but slow lane still hugs.
       #ret.steerKpV, ret.steerKiV = [[0.5], [0.24]]  #tweaking optimal result      - RESULT: Does not fix slow lane hug
       #ret.steerKpV, ret.steerKiV = [[0.5], [0.3]]   #model: OS 3%, risetime 3.5s  - NOT TESTED
