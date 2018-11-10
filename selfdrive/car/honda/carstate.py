@@ -303,6 +303,7 @@ class CarState(object):
     self.pcm_acc_status = cp.vl["POWERTRAIN_DATA"]['ACC_STATUS']
     self.hud_lead = cp.vl["ACC_HUD"]['HUD_LEAD']
     
+    # when user presses distance button on steering wheel
     if self.cruise_setting == 3:
       if cp.vl["SCM_BUTTONS"]["CRUISE_SETTING"] == 0:
         self.trMode = (self.trMode + 1 ) % 3
@@ -311,7 +312,10 @@ class CarState(object):
     self.read_distance_lines = self.trMode + 1
     if self.read_distance_lines <> self.read_distance_lines_prev:
       self.read_distance_lines_prev = self.read_distance_lines
-
+      
+    # override lead car distance setting to 1.8s if less than 42 kph so car can brake in time when slow
+    if v_ego_kph < 42 and self.read_distance_lines < 2
+      self.read_distance_lines = 2
 
 # carstate standalone tester
 if __name__ == '__main__':
