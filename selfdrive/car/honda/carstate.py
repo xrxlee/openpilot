@@ -301,8 +301,8 @@ class CarState(object):
     if self.read_distance_lines <> self.read_distance_lines_prev:
       self.read_distance_lines_prev = self.read_distance_lines
       
-    # override lead car distance setting to 1.8s if less than 42 kph so car can brake in time when slow
-    if self.v_ego < 11.4 and self.read_distance_lines < 2:
+    # override lead car distance setting to 1.8s if less than 60 kph (16.6667 m/s) so car can brake in time when slow
+    if self.v_ego < 16.6667 and self.read_distance_lines < 2:
       self.read_distance_lines = 2
       self.trMode = 1
 
