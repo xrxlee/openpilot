@@ -311,15 +311,6 @@ class CarState(object):
     self.cruise_setting = cp.vl["SCM_BUTTONS"]['CRUISE_SETTING']
     self.read_distance_lines = self.trMode + 1
       
-    # override lead car distance setting when slow if shortest distance is set
-    if self.v_ego < 11.4 and self.read_distance_lines < 2:
-      self.read_distance_lines = 3
-      self.trMode = 2
-    else
-      if self.v_ego >= 11.4 and self.read_distance_lines > 2
-        self.read_distance_lines = self.read_distance_lines_prev
-        self.trMode = self.read_distance_lines - 1
-      
     if self.read_distance_lines <> self.read_distance_lines_prev:
       self.read_distance_lines_prev = self.read_distance_lines
 
