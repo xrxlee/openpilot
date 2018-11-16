@@ -151,9 +151,9 @@ class CarController(object):
     # Send CAN commands.
     can_sends = []
     
-    # Set apply_steer to 0 if user turns off LKAS
+    # Set lkas_active to 0 if user turns off LKAS
     if not CS.lkMode:
-      apply_steer = 0
+      lkas_active = 0
     
     # Send steering command.
     idx = frame % 4
