@@ -146,14 +146,10 @@ class CarController(object):
     apply_brake = int(clip(self.brake_last * BRAKE_MAX, 0, BRAKE_MAX - 1))
     apply_steer = int(clip(-actuators.steer * STEER_MAX, -STEER_MAX, STEER_MAX))
 
-    lkas_active = enabled and not CS.steer_not_allowed
+    lkas_active = enabled and not CS.steer_not_allowed and CS.lkMode   # add LKAS button to toggle steering
 
     # Send CAN commands.
     can_sends = []
-    
-    # Set lkas_active to 0 if user turns off LKAS
-    if not CS.lkMode:
-      lkas_active = 0
     
     # Send steering command.
     idx = frame % 4
