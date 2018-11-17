@@ -123,12 +123,16 @@ class CarController(object):
     # For lateral control-only, send chimes as a beep since we don't send 0x1fa
     if CS.CP.radarOffCan:
       snd_beep = snd_beep if snd_beep is not 0 else snd_chime
+      
+    # Do not send audible alert when steering is disabled
+    if not CS.lkMode:
+      snd_chime = 0
 
     #print chime, alert_id, hud_alert
     fcw_display, steer_required, acc_alert = process_hud_alert(hud_alert)
 
     hud = HUDData(int(pcm_accel), int(round(hud_v_cruise)), 1, hud_car,
-                  0xc1, hud_lanes, int(snd_beep), snd_chime, fcw_display, acc_alert, steer_required, CS.read_distance_lines, not CS.lkMode)
+                  0xc1, hud_lanes, int(snd_beep), snd_chime, fcw_display, acc_alert, steer_required, CS.read_distance_lines, CS.lkMode)
 
     # **** process the car messages ****
 
@@ -146,14 +150,10 @@ class CarController(object):
     apply_brake = int(clip(self.brake_last * BRAKE_MAX, 0, BRAKE_MAX - 1))
     apply_steer = int(clip(-actuators.steer * STEER_MAX, -STEER_MAX, STEER_MAX))
 
-    lkas_active = enabled and not CS.steer_not_allowed
+    lkas_active = enabled and not CS.steer_not_allowed and CS.lkMode   # add LKAS button to toggle steering
 
     # Send CAN commands.
     can_sends = []
-    
-    # Set apply_steer to 0 if user turns off LKAS
-    if not CS.lkMode:
-      apply_steer = 0
     
     # Send steering command.
     idx = frame % 4
