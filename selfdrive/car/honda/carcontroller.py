@@ -61,7 +61,7 @@ def process_hud_alert(hud_alert):
     pass
   elif hud_alert == AH.FCW:         # FCW
     fcw_display = hud_alert[1]
-  elif hud_alert == AH.STEER and CS.lkMode:       # STEER
+  elif hud_alert == AH.STEER:       # STEER
     steer_required = hud_alert[1]
   else:                             # any other ACC alert
     acc_alert = hud_alert[1]
