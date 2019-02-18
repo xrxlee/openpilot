@@ -1,3 +1,5 @@
+<b><u>PLEASE DO A FRESH CLONE INSTEAD OF GIT PULL FOR THE LATEST CHANGES</u></b>
+
 This is a fork of comma's openpilot, and contains tweaks for Hondas and GM vehicles 
 
 <b>IMPORTANT!</b>
@@ -18,14 +20,14 @@ I will attempt to detail the changes in each of the branches here:
 
 <b>kegman-plusGernbySteering (Updated Jan 22)</b> - this branch is everything in the kegman branch PLUS a Gernby's LATEST feed forward steering.  This also includes working code for GM cars.  (thx to @jamezz for the code and @cryptokylan for submitting the GM stuff!)
 
-<b>kegman-plusGernbyResStagedRollingTune</b> - this is the companion tuning branch to kegman-plusGernbySteering. You will need to get Gernby's OpenPilot Dashboard to capture data when running this branch.  Please contact @gernby on Comma discord channel for more information.
-
 <b>kegman-plusPilotAwesomeness</b> - <u>If you have a Honda Pilot, OR Honda Ridgeline use this branch.</u>  It has everything in kegman branch, uses my PID tuning + a magical older version of Gernby's FF steering which just happened to work very well across all driving conditions including slanted (crowned roads), wind gusts, road bumps, centering on curves, and keeping proper distance from curbs.  I have yet to test a combination of FF steering and PID tuning that can beat the performance of this for Honda Pilots.
 
 Note above comments apply to Clarity testing branches as well.
 
 
-List of changes and tweaks (latest changes at the top:
+List of changes and tweaks (latest changes at the top):
+- <b>Remember last distance bar interval</b>:  On startup, the car will bring up the last distance interval used before the car was turned off.  For example:  If you were at X bars before you stopped the car or shut the Eon down, the next time you start the car, the distance setting will be X bars.  
+
 - <b>OTA Updates turned on</b>:  Previously I had turned off OTA updates for safety reasons - I didn't want anyone to get an unexpected result when I made changes.  It appears that many more users want OTA updates for convenience so I have turned this feature back on.  IMPORTANT: If you DO NOT want OTA updates then create a file called "/data/no_ota_updates" and it will not perform OTA updates as long as that file exists.
 
 - <b>Increase acceleration profile when lead car pulls away too quickly or no lead car</b>:  OP has two acceleration profiles, one occurs when following a lead car, and one without a lead car.  Oddly the acceleration profile when following is greater than when not following.  So sometimes a lead car will pull away so quickly, that the car goes from following to not following mode and the acceleration profile actually drops.  I've made the acceleration profiles the same so that the the car doesn't stop accelerating at the same rate when the lead car rips away quickly from a stop. 
