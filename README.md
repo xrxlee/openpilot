@@ -11,7 +11,7 @@ Four bar: 2.5s
 
 <b>WARNING:</b>  Do NOT depend on OP to stop the car in time if you are approaching an object which is not in motion in the same direction as your car.  The radar will NOT detect the stationary object in time to slow your car enough to stop.  If you are approaching a stopped vehicle you must disengage and brake as radars ignore objects that are not in motion.
 
-<b>NOTICE:</b>  Due to feedback I have turned on OTA updates.  You will receive updates automatically on your Eon so you don't have to reclone or git pull any longer to receive new features.  If you DO NOT want OTA updates then create a file called "/data/no_ota_updates" and it will not perform OTA updates as long as that file exists.  
+<b>NOTICE:</b>  Due to feedback I have turned on OTA updates.  Similar to Comma's update behaviour, you will receive updates automatically WHEN YOU REBOOT TWICE on your Eon so you don't have to reclone or git pull any longer to receive new features.  If you DO NOT want OTA updates then create a file called "/data/no_ota_updates" and it will not perform OTA updates as long as that file exists.  
 
 
 I will attempt to detail the changes in each of the branches here:
@@ -28,6 +28,8 @@ Note above comments apply to Clarity testing branches as well.
 
 
 List of changes and tweaks (latest changes at the top):
+- <b>Tone down PID tuning for Pilot and Ridgline for 0.5.9</b>  Comma changed latcontrol for 0.5.9, so I had to tone down the PID tuning, reducing steerKpV and steerKiV (to 0.45 and 0.135) because of a slow ping-pong on my 2018 Pilot.  Wheel shaking on 2017 Pilots with 0.5.9 have been reported and this change should help, but may not be sufficient for the 2017 model (and possibly 2016).  2016/7 owners may need to adjust steerKpV and steerKiV manually back to 0.38 and 0.11 in /data/openpilot/selfdrive/car/honda/interface.py to reduce the shake.
+
 - <b>Persist some configuration data in JSON file (/data/kegman.json)</b>:  Sometimes you just want to make a tweak and persist some data that doesn't get wiped out the next time OP is updated.  Stuff like:
 
 
@@ -48,7 +50,7 @@ List of changes and tweaks (latest changes at the top):
 
 - <b>Remember last distance bar interval</b>:  On startup, the car will bring up the last distance interval used before the car was turned off.  For example:  If you were at X bars before you stopped the car or shut the Eon down, the next time you start the car, the distance setting will be X bars.  
 
-- <b>OTA Updates turned on</b>:  Previously I had turned off OTA updates for safety reasons - I didn't want anyone to get an unexpected result when I made changes.  It appears that many more users want OTA updates for convenience so I have turned this feature back on.  IMPORTANT: If you DO NOT want OTA updates then create a file called "/data/no_ota_updates" and it will not perform OTA updates as long as that file exists.
+- <b>OTA Updates turned on</b>:  Previously I had turned off OTA updates for safety reasons - I didn't want anyone to get an unexpected result when I made changes.  It appears that many more users want OTA updates for convenience so I have turned this feature back on.  REBOOT TWICE TO GET AN UPDATE while Eon is connected to the internet.  Why twice?  Rebooting once does the comparison and git pull, updating the code, then the Eon requires another reboot to recompile and run the updated code.  IMPORTANT: If you DO NOT want OTA updates then create a file called "/data/no_ota_updates" and it will not perform OTA updates as long as that file exists.  SSHing into the Eon and running cd /data && touch no_ota_updates should do the trick.
 
 - <b>Increase acceleration profile when lead car pulls away too quickly or no lead car</b>:  OP has two acceleration profiles, one occurs when following a lead car, and one without a lead car.  Oddly the acceleration profile when following is greater than when not following.  So sometimes a lead car will pull away so quickly, that the car goes from following to not following mode and the acceleration profile actually drops.  I've made the acceleration profiles the same so that the the car doesn't stop accelerating at the same rate when the lead car rips away quickly from a stop. 
 
