@@ -13,6 +13,7 @@ from common.realtime import sec_since_boot
 from common.numpy_fast import clip
 from common.filter_simple import FirstOrderFilter
 from selfdrive.kegman_conf import kegman_conf
+import subprocess
 
 ThermalStatus = log.ThermalData.ThermalStatus
 CURRENT_TAU = 2.   # 2s time constant
@@ -113,16 +114,29 @@ def check_car_battery_voltage(should_start, health, charging_disabled, msg):
   #   - 12V battery voltage is too low, and;
   #   - onroad isn't started
   #   - keep battery within 67-70% State of Charge to preserve longevity
-  k = kegman_conf()
-  print k
+  kegman = kegman_conf()
+  print health
 
-  if charging_disabled and (health is None or health.health.voltage > 11800) and msg.thermal.batteryPercent < int(k.conf['battChargeMin']):
+  if (charging_disabled and 
+      (health is not None and health.health.voltage > int(kegman.conf['carVoltageMinEonShutdown']))):
+    car_voltage_low = False
+  elif (charging_disabled and 
+      (health is not None and health.health.voltage < int(kegman.conf['carVoltageMinEonShutdown']))):
+    car_voltage_low = True
+  else:
+    car_voltage_low = False
+  
+  print "    CAR VOLTAGE LOW = ",car_voltage_low
+ 
+
+  if ((health is None or not car_voltage_low) and
+       msg.thermal.batteryPercent < int(kegman.conf['battChargeMin'])):
     charging_disabled = False
     os.system('echo "1" > /sys/class/power_supply/battery/charging_enabled')
-  elif not charging_disabled and (msg.thermal.batteryPercent > int(k.conf['battChargeMax']) or (health is not None and health.health.voltage < 11500 and not should_start)):
-    charging_disabled = True
-    os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
-  elif msg.thermal.batteryCurrent < 0 and msg.thermal.batteryPercent > int(k.conf['battChargeMax']):
+    
+  elif ((msg.thermal.batteryPercent > int(kegman.conf['battChargeMax']) or 
+      (health is not None and car_voltage_low and 
+      not should_start))):
     charging_disabled = True
     os.system('echo "0" > /sys/class/power_supply/battery/charging_enabled')
 
@@ -162,9 +176,10 @@ class LocationStarter(object):
 
 def thermald_thread():
   setup_eon_fan()
+  kegman = kegman_conf()
 
   # prevent LEECO from undervoltage
-  BATT_PERC_OFF = 10 if LEON else 3
+  BATT_PERC_OFF = int(kegman.conf['battPercOff'])
 
   # now loop
   context = zmq.Context()
@@ -294,9 +309,11 @@ def thermald_thread():
 
       # shutdown if the battery gets lower than 3%, it's discharging, we aren't running for
       # more than a minute but we were running
-      if msg.thermal.batteryPercent < BATT_PERC_OFF and msg.thermal.batteryStatus == "Discharging" and \
-         started_seen and (sec_since_boot() - off_ts) > 60:
-        os.system('LD_LIBRARY_PATH="" svc power shutdown')
+      #if msg.thermal.batteryPercent < BATT_PERC_OFF and msg.thermal.batteryStatus == "Discharging" and \
+      #   started_seen and (sec_since_boot() - off_ts) > 60:
+        #os.system('LD_LIBRARY_PATH="" svc power shutdown')
+      if msg.thermal.batteryPercent < BATT_PERC_OFF and not msg.thermal.usbOnline:
+        subprocess.call("reboot -p", shell=True)
 
     charging_disabled = check_car_battery_voltage(should_start, health, charging_disabled, msg)
     
