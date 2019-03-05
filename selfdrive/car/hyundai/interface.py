@@ -69,6 +69,11 @@ class CarInterface(object):
     tireStiffnessFront_civic = 192150
     tireStiffnessRear_civic = 202500
 
+    ret.steerReactance = 0.7
+    ret.steerInductance = 1.0
+    ret.steerResistance = 1.0
+    ret.eonToFront = 0.5
+
     ret.steerActuatorDelay = 0.1  # Default delay
     tire_stiffness_factor = 1.
 
@@ -183,7 +188,7 @@ class CarInterface(object):
   def update(self, c):
     # ******************* do can recv *******************
     canMonoTimes = []
-    self.cp.update(int(sec_since_boot() * 1e9), False)
+    self.cp.update(int(sec_since_boot() * 1e9), True)
     self.cp_cam.update(int(sec_since_boot() * 1e9), False)
     self.CS.update(self.cp, self.cp_cam)
     # create message
@@ -218,7 +223,8 @@ class CarInterface(object):
 
     # steering wheel
     ret.steeringAngle = self.CS.angle_steers
-    ret.steeringRate = self.CS.angle_steers_rate  # it's unsigned
+    # use calculated steering rate since this is unsigned
+    ret.steeringRate = 0
 
     ret.steeringTorque = self.CS.steer_torque_driver
     ret.steeringPressed = self.CS.steer_override
