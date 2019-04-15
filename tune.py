@@ -40,6 +40,16 @@ kegman = kegman_conf()
 #kegman.write_config(kegman.conf)
 param = ["tuneGernby", "reactMPC", "dampMPC", "rateFF", "Kp", "Ki"]
 
+if (kegman.conf["grafanaUser"] != "noUser" or kegman.conf["grafanaUser"] == ""):
+  cmd = '/usr/local/bin/python /data/openpilot/dashboard.py'
+  process = subprocess.Popen(cmd, shell=True,
+                             stdout=subprocess.PIPE,
+                             stderr=None,
+                             close_fds=True)
+else:
+  print "Please setup grafanaUser in /data/kegman.json to your desired username!"
+  sys.exit()
+
 j = 0
 while True:
   print ""
@@ -108,6 +118,7 @@ while True:
       j = len(param) - 1
 
   elif (char == "z"):
+    process.kill()
     break
 
 
@@ -148,3 +159,6 @@ while True:
     kegman.write_config(kegman.conf)
 
   time.sleep(button_delay)
+
+else:
+  process.kill()
