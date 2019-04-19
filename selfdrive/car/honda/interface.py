@@ -179,7 +179,7 @@ class CarInterface(object):
     # Gernby's default params
     ret.steerMPCReactTime = 0.025     # increase total MPC projected time by 25 ms
     ret.steerMPCDampTime = 0.15       # dampen desired angle over 250ms (5 mpc cycles)
-    ret.steerReactTime = 0.001    -
+    ret.steerReactTime = 0.001
     ret.steerDampTime = 0.01
     
     # Optimized car params: tire_stiffness_factor and steerRatio are a result of a vehicle
@@ -342,7 +342,7 @@ class CarInterface(object):
       tire_stiffness_factor = 0.82
       ret.steerMPCReactTime = -0.1     # increase total MPC projected time by 25 ms
       ret.steerMPCDampTime = 0.28       # dampen desired angle over 250ms (5 mpc cycles)
-      ret.steerReactTime = 0.001    -
+      ret.steerReactTime = 0.001
       ret.steerDampTime = 0.04
       ret.steerKpV, ret.steerKiV = [[0.38], [0.11]]
       ret.longitudinalKpBP = [0., 5., 35.]
@@ -359,7 +359,7 @@ class CarInterface(object):
       tire_stiffness_factor = 0.82
       ret.steerMPCReactTime = -0.1     # increase total MPC projected time by 25 ms
       ret.steerMPCDampTime = 0.28       # dampen desired angle over 250ms (5 mpc cycles)
-      ret.steerReactTime = 0.001    -
+      ret.steerReactTime = 0.001
       ret.steerDampTime = 0.04
       ret.steerKpV, ret.steerKiV = [[0.38], [0.11]]
       ret.longitudinalKpBP = [0., 5., 35.]
