@@ -51,7 +51,7 @@ class kegman_conf():
         self.element_updated = True
 
       if "tuneGernby" not in self.config:
-        self.config.update({"tuneGernby":"1"})
+        self.config.update({"tuneGernby":"0"})
         self.config.update({"Kp":"-1"})
         self.config.update({"Ki":"-1"})
         self.config.update({"dampMPC":"-1"})
