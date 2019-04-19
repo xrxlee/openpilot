@@ -62,7 +62,7 @@ class kegman_conf():
         self.element_updated = True
 		
       if "rateFF" not in self.config:
-        self.config.update({"rateFF":"0.01"})
+        self.config.update({"rateFF":"-1"})
         self.element_updated = True
 
       if "dampSteer" not in self.config:
@@ -85,7 +85,7 @@ class kegman_conf():
       self.config = {"cameraOffset":"0.06", "lastTrMode":"1", "battChargeMin":"60", "battChargeMax":"70", \
                      "wheelTouchSeconds":"180", "battPercOff":"25", "carVoltageMinEonShutdown":"11800", \
                      "brakeStoppingTarget":"0.25", "tuneGernby":"1", "reactMPC":"-1", "reactSteer":"-1", \
-                     "dampMPC":"-1", "dampSteer":"-1", "Kp":"-1", "Ki":"-1", "rateFF":"0.01"}
+                     "dampMPC":"-1", "dampSteer":"-1", "Kp":"-1", "Ki":"-1", "rateFF":"-1"}
 
       self.write_config(self.config)
     return self.config
