@@ -27,7 +27,7 @@ class kegman_conf():
       self.conf['Ki'] = str(round(CP.steerKiV[0],3))
       write_conf = True
     if self.conf['rateFF'] == "-1":
-      self.conf['rateFF'] = "0.01"
+      self.conf['rateFF'] = str(round(CP.rateFFGain,3))
       write_conf = True
 
     if write_conf:
