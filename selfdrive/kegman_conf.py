@@ -12,11 +12,11 @@ class kegman_conf():
     if self.conf['tuneGernby'] != "1":
       self.conf['tuneGernby'] = str(1)
       write_conf = True
-    if self.conf['reactMPC']) == "-1" or self.conf['dampMPC']) == "-1":
+    if self.conf['reactMPC'] == "-1" or self.conf['dampMPC'] == "-1":
       self.conf['reactMPC'] = str(round(CP.steerMPCReactTime,3))
       self.conf['dampMPC'] = str(round(CP.steerMPCDampTime,3))
       write_conf = True
-    if self.conf['reactSteer']) == "-1" or self.conf['dampSteer']) == "-1":
+    if self.conf['reactSteer'] == "-1" or self.conf['dampSteer'] == "-1":
       self.conf['reactSteer'] = str(round(CP.steerReactTime,3))
       self.conf['dampSteer'] = str(round(CP.steerDampTime,3))
       write_conf = True
