@@ -139,9 +139,9 @@ class LongitudinalMpc(object):
     self.bp_counter += 1
     if self.bp_counter % 500 == 0:
       kegman = kegman_conf()
-      self.1barBP = [float(kegman.conf['1barBP0']), float(kegman.conf['1barBP1'])]
-      self.2barBP = [float(kegman.conf['2barBP0']), float(kegman.conf['2barBP1'])]
-      self.3barBP = [float(kegman.conf['3barBP0']), float(kegman.conf['3barBP1'])]
+      self.oneBarBP = [float(kegman.conf['1barBP0']), float(kegman.conf['1barBP1'])]
+      self.twoBarBP = [float(kegman.conf['2barBP0']), float(kegman.conf['2barBP1'])]
+      self.threeBarBP = [float(kegman.conf['3barBP0']), float(kegman.conf['3barBP1'])]
       self.bp_counter = 0
                               
     if CS.carState.readdistancelines == 1:
