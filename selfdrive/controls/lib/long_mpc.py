@@ -8,6 +8,7 @@ from selfdrive.controls.lib.radar_helpers import _LEAD_ACCEL_TAU
 from selfdrive.controls.lib.longitudinal_mpc import libmpc_py
 from selfdrive.controls.lib.drive_helpers import MPC_COST_LONG
 from selfdrive.kegman_conf import kegman_conf
+kegman = kegman_conf()
 
 # One, two and three bar distances (in s)
 ONE_BAR_DISTANCE = 0.9  # in seconds
@@ -22,14 +23,14 @@ CITY_SPEED = 19.44  # braking profile changes when below this speed based on fol
 STOPPING_DISTANCE = 2  # increase distance from lead car when stopped
 
 # Braking profile changes (makes the car brake harder because it wants to be farther from the lead car - increase to brake harder)
-ONE_BAR_PROFILE = [ONE_BAR_DISTANCE, TWO_BAR_DISTANCE]
-ONE_BAR_PROFILE_BP = [0.0, 3.0]
+ONE_BAR_PROFILE = [ONE_BAR_DISTANCE, FOUR_BAR_DISTANCE]
+#ONE_BAR_PROFILE_BP = [0.0, 3.0]
 
-TWO_BAR_PROFILE = [TWO_BAR_DISTANCE, THREE_BAR_DISTANCE]
-TWO_BAR_PROFILE_BP = [0.0, 3.5]
+TWO_BAR_PROFILE = [TWO_BAR_DISTANCE, FOUR_BAR_DISTANCE]
+#TWO_BAR_PROFILE_BP = [0.0, 3.5]
 
-THREE_BAR_PROFILE = [THREE_BAR_DISTANCE, THREE_BAR_DISTANCE]
-THREE_BAR_PROFILE_BP = [0.0, 4.0]
+THREE_BAR_PROFILE = [THREE_BAR_DISTANCE, FOUR_BAR_DISTANCE]
+#THREE_BAR_PROFILE_BP = [0.0, 4.0]
 
 class LongitudinalMpc(object):
   def __init__(self, mpc_id, live_longitudinal_mpc):
@@ -51,7 +52,6 @@ class LongitudinalMpc(object):
     self.last_cloudlog_t = 0.0
     
     self.bp_counter = 0
-    kegman = kegman_conf()
     ONE_BAR_PROFILE_BP = [float(kegman.conf['1barBP0']), float(kegman.conf['1barBP1'])]
     TWO_BAR_PROFILE_BP = [float(kegman.conf['2barBP0']), float(kegman.conf['2barBP1'])]
     THREE_BAR_PROFILE_BP = [float(kegman.conf['3barBP0']), float(kegman.conf['3barBP1'])]
