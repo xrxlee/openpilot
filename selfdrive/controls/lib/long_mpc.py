@@ -8,7 +8,6 @@ from selfdrive.controls.lib.radar_helpers import _LEAD_ACCEL_TAU
 from selfdrive.controls.lib.longitudinal_mpc import libmpc_py
 from selfdrive.controls.lib.drive_helpers import MPC_COST_LONG
 from selfdrive.kegman_conf import kegman_conf
-kegman = kegman_conf()
 
 # One, two and three bar distances (in s)
 ONE_BAR_DISTANCE = 0.9  # in seconds
@@ -52,9 +51,7 @@ class LongitudinalMpc(object):
     self.last_cloudlog_t = 0.0
     
     self.bp_counter = 0
-    ONE_BAR_PROFILE_BP = [float(kegman.conf['1barBP0']), float(kegman.conf['1barBP1'])]
-    TWO_BAR_PROFILE_BP = [float(kegman.conf['2barBP0']), float(kegman.conf['2barBP1'])]
-    THREE_BAR_PROFILE_BP = [float(kegman.conf['3barBP0']), float(kegman.conf['3barBP1'])]
+
 
   def send_mpc_solution(self, qp_iterations, calculation_time):
     qp_iterations = max(0, qp_iterations)
@@ -137,8 +134,8 @@ class LongitudinalMpc(object):
     
     # Live Tuning of breakpoints for braking profile change
     self.bp_counter += 1
+    kegman = kegman_conf()
     if self.bp_counter % 500 == 0:
-      kegman = kegman_conf()
       ONE_BAR_PROFILE_BP = [float(kegman.conf['1barBP0']), float(kegman.conf['1barBP1'])]
       TWO_BAR_PROFILE_BP = [float(kegman.conf['2barBP0']), float(kegman.conf['2barBP1'])]
       THREE_BAR_PROFILE_BP = [float(kegman.conf['3barBP0']), float(kegman.conf['3barBP1'])]
