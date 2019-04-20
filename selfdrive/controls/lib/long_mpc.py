@@ -51,6 +51,7 @@ class LongitudinalMpc(object):
     self.last_cloudlog_t = 0.0
     
     self.bp_counter = 0
+    kegman = kegman_conf()
     ONE_BAR_PROFILE_BP = [float(kegman.conf['1barBP0']), float(kegman.conf['1barBP1'])]
     TWO_BAR_PROFILE_BP = [float(kegman.conf['2barBP0']), float(kegman.conf['2barBP1'])]
     THREE_BAR_PROFILE_BP = [float(kegman.conf['3barBP0']), float(kegman.conf['3barBP1'])]
