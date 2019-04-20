@@ -49,9 +49,9 @@ class LongitudinalMpc(object):
     self.last_cloudlog_t = 0.0
     self.v_rel = 10
     self.last_cloudlog_t = 0.0
-    self.1barBP = [0.0, 3.0]
-    self.2barBP = [0.0, 3.5]
-    self.3barBP = [0.0, 4.0]
+    self.oneBarBP = [0.0, 3.0]
+    self.twoBarBP = [0.0, 3.5]
+    self.threeBarBP = [0.0, 4.0]
     
     self.bp_counter = 0
 
@@ -147,7 +147,7 @@ class LongitudinalMpc(object):
     if CS.carState.readdistancelines == 1:
       #if self.street_speed and (self.lead_car_gap_shrinking or self.tailgating):
       if self.street_speed:
-        TR = interp(-self.v_rel, self.1barBP, ONE_BAR_PROFILE)  
+        TR = interp(-self.v_rel, self.oneBarBP, ONE_BAR_PROFILE)  
       else:
         TR = ONE_BAR_DISTANCE 
       if CS.carState.readdistancelines != self.lastTR:
@@ -157,7 +157,7 @@ class LongitudinalMpc(object):
     elif CS.carState.readdistancelines == 2:
       #if self.street_speed and (self.lead_car_gap_shrinking or self.tailgating):
       if self.street_speed:
-        TR = interp(-self.v_rel, self.2barBP, TWO_BAR_PROFILE)
+        TR = interp(-self.v_rel, self.twoBarBP, TWO_BAR_PROFILE)
       else:
         TR = TWO_BAR_DISTANCE 
       if CS.carState.readdistancelines != self.lastTR:
@@ -167,7 +167,7 @@ class LongitudinalMpc(object):
     elif CS.carState.readdistancelines == 3:
       if self.street_speed:
       #if self.street_speed and (self.lead_car_gap_shrinking or self.tailgating):
-        TR = interp(-self.v_rel, self.3barBP, THREE_BAR_PROFILE)
+        TR = interp(-self.v_rel, self.threeBarBP, THREE_BAR_PROFILE)
       else:
         TR = THREE_BAR_DISTANCE 
       if CS.carState.readdistancelines != self.lastTR:
