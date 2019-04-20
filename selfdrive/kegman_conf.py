@@ -9,9 +9,9 @@ class kegman_conf():
 
   def init_config(self, CP):
     write_conf = False
-    if self.conf['tuneGernby'] != "1":
-      self.conf['tuneGernby'] = str(1)
-      write_conf = True
+    #if self.conf['tuneGernby'] != "1":
+    #  self.conf['tuneGernby'] = str(1)
+    #  write_conf = True
     if self.conf['reactMPC'] == "-1" or self.conf['dampMPC'] == "-1":
       self.conf['reactMPC'] = str(round(CP.steerMPCReactTime,3))
       self.conf['dampMPC'] = str(round(CP.steerMPCDampTime,3))
@@ -70,6 +70,14 @@ class kegman_conf():
         self.config.update({"reactSteer":"-1"})
         self.element_updated = True
 
+      if "1barBP0" not in self.config:
+        self.config.update({"1barBP0":"0.0"})
+	self.config.update({"1barBP1":"10.0"})
+	self.config.update({"2barBP0":"0.0"})
+	self.config.update({"2barBP1":"10.0"})
+	self.config.update({"3barBP0":"0.0"})
+	self.config.update({"3barBP1":"10.0"})
+        self.element_updated = True
 
       # Force update battery charge limits to higher values for Big Model
       #if self.config['battChargeMin'] != "75":
