@@ -49,6 +49,9 @@ class LongitudinalMpc(object):
     self.last_cloudlog_t = 0.0
     self.v_rel = 10
     self.last_cloudlog_t = 0.0
+    self.1barBP = [0.0, 3.0]
+    self.2barBP = [0.0, 3.5]
+    self.3barBP = [0.0, 4.0]
     
     self.bp_counter = 0
 
@@ -134,17 +137,17 @@ class LongitudinalMpc(object):
     
     # Live Tuning of breakpoints for braking profile change
     self.bp_counter += 1
-    kegman = kegman_conf()
     if self.bp_counter % 500 == 0:
-      ONE_BAR_PROFILE_BP = [float(kegman.conf['1barBP0']), float(kegman.conf['1barBP1'])]
-      TWO_BAR_PROFILE_BP = [float(kegman.conf['2barBP0']), float(kegman.conf['2barBP1'])]
-      THREE_BAR_PROFILE_BP = [float(kegman.conf['3barBP0']), float(kegman.conf['3barBP1'])]
+      kegman = kegman_conf()
+      self.1barBP = [float(kegman.conf['1barBP0']), float(kegman.conf['1barBP1'])]
+      self.2barBP = [float(kegman.conf['2barBP0']), float(kegman.conf['2barBP1'])]
+      self.3barBP = [float(kegman.conf['3barBP0']), float(kegman.conf['3barBP1'])]
       self.bp_counter = 0
                               
     if CS.carState.readdistancelines == 1:
       #if self.street_speed and (self.lead_car_gap_shrinking or self.tailgating):
       if self.street_speed:
-        TR = interp(-self.v_rel, ONE_BAR_PROFILE_BP, ONE_BAR_PROFILE)  
+        TR = interp(-self.v_rel, self.1barBP, ONE_BAR_PROFILE)  
       else:
         TR = ONE_BAR_DISTANCE 
       if CS.carState.readdistancelines != self.lastTR:
@@ -154,7 +157,7 @@ class LongitudinalMpc(object):
     elif CS.carState.readdistancelines == 2:
       #if self.street_speed and (self.lead_car_gap_shrinking or self.tailgating):
       if self.street_speed:
-        TR = interp(-self.v_rel, TWO_BAR_PROFILE_BP, TWO_BAR_PROFILE)
+        TR = interp(-self.v_rel, self.2barBP, TWO_BAR_PROFILE)
       else:
         TR = TWO_BAR_DISTANCE 
       if CS.carState.readdistancelines != self.lastTR:
@@ -164,7 +167,7 @@ class LongitudinalMpc(object):
     elif CS.carState.readdistancelines == 3:
       if self.street_speed:
       #if self.street_speed and (self.lead_car_gap_shrinking or self.tailgating):
-        TR = interp(-self.v_rel, THREE_BAR_PROFILE_BP, THREE_BAR_PROFILE)
+        TR = interp(-self.v_rel, self.3barBP, THREE_BAR_PROFILE)
       else:
         TR = THREE_BAR_DISTANCE 
       if CS.carState.readdistancelines != self.lastTR:
