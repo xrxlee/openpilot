@@ -358,7 +358,7 @@ class CarInterface(object):
       ret.centerToFront = ret.wheelbase * 0.41
       ret.steerRatio = 15.59        # as spec
       tire_stiffness_factor = 0.82
-      ret.rateFFGain = 0.04
+      ret.rateFFGain = 0.4
       ret.steerMPCReactTime = -0.1     # increase total MPC projected time by 25 ms
       ret.steerMPCDampTime = 0.28       # dampen desired angle over 250ms (5 mpc cycles)
       ret.steerReactTime = 0.001
