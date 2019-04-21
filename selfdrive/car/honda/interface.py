@@ -33,58 +33,7 @@ def compute_gb_honda(accel, speed):
     creep_brake = (creep_speed - speed) / creep_speed * creep_brake_value
   return float(accel) / 4.8 - creep_brake
 
-
-def get_compute_gb_acura():
-  # generate a function that takes in [desired_accel, current_speed] -> [-1.0, 1.0]
-  # where -1.0 is max brake and 1.0 is max gas
-  # see debug/dump_accel_from_fiber.py to see how those parameters were generated
-  w0 = np.array([[ 1.22056961, -0.39625418,  0.67952657],
-                 [ 1.03691769,  0.78210306, -0.41343188]])
-  b0 = np.array([ 0.01536703, -0.14335321, -0.26932889])
-  w2 = np.array([[-0.59124422,  0.42899439,  0.38660881],
-                 [ 0.79973811,  0.13178682,  0.08550351],
-                 [-0.15651935, -0.44360259,  0.76910877]])
-  b2 = np.array([ 0.15624429,  0.02294923, -0.0341086 ])
-  w4 = np.array([[-0.31521443],
-                 [-0.38626176],
-                 [ 0.52667892]])
-  b4 = np.array([-0.02922216])
-
-  def compute_output(dat, w0, b0, w2, b2, w4, b4):
-    m0 = np.dot(dat, w0) + b0
-    m0 = leakyrelu(m0, 0.1)
-    m2 = np.dot(m0, w2) + b2
-    m2 = leakyrelu(m2, 0.1)
-    m4 = np.dot(m2, w4) + b4
-    return m4
-
-  def leakyrelu(x, alpha):
-    return np.maximum(x, alpha * x)
-
-  def _compute_gb_acura(accel, speed):
-    # linearly extrap below v1 using v1 and v2 data
-    v1 = 5.
-    v2 = 10.
-    dat = np.array([accel, speed])
-    if speed > 5.:
-      m4 = compute_output(dat, w0, b0, w2, b2, w4, b4)
-    else:
-      dat[1] = v1
-      m4v1 = compute_output(dat, w0, b0, w2, b2, w4, b4)
-      dat[1] = v2
-      m4v2 = compute_output(dat, w0, b0, w2, b2, w4, b4)
-      m4 = (speed - v1) * (m4v2 - m4v1) / (v2 - v1) + m4v1
-    return float(m4)
-
-  return _compute_gb_acura
-
-
-class CarInterface(object):
-  def __init__(self, CP, sendcan=None):
-    self.CP = CP
-
-    self.frame = 0
-    self.last_enable_pressed = 0
+:
     self.last_enable_sent = 0
     self.gas_pressed_prev = False
     self.brake_pressed_prev = False
@@ -104,7 +53,7 @@ class CarInterface(object):
       self.CC = CarController(self.cp.dbc_name, CP.enableCamera)
 
     if self.CS.CP.carFingerprint == CAR.ACURA_ILX:
-      self.compute_gb = get_compute_gb_acura()
+      self.compute_gb = get_compute_gb_acura
     else:
       self.compute_gb = compute_gb_honda
 
@@ -340,12 +289,12 @@ class CarInterface(object):
       ret.centerToFront = ret.wheelbase * 0.41
       ret.steerRatio = 16.0         # as spec
       tire_stiffness_factor = 0.82
-      ret.rateFFGain = 0.4
-      ret.steerMPCReactTime = -0.1     # increase total MPC projected time by 25 ms
-      ret.steerMPCDampTime = 0.28       # dampen desired angle over 250ms (5 mpc cycles)
-      ret.steerReactTime = 0.001
-      ret.steerDampTime = 0.04
-      ret.steerKpV, ret.steerKiV = [[0.38], [0.11]]
+      ret.rateFFGain = 0.001
+      ret.steerMPCReactTime = 0.0     # increase total MPC projected time by 25 ms
+      ret.steerMPCDampTime = 0.1       # dampen desired angle over 250ms (5 mpc cycles)
+      ret.steerReactTime = 0.0
+      ret.steerDampTime = 0.02
+      ret.steerKpV, ret.steerKiV = [[0.40], [0.20]]
       ret.longitudinalKpBP = [0., 5., 35.]
       ret.longitudinalKpV = [1.2, 0.8, 0.5]
       ret.longitudinalKiBP = [0., 35.]
@@ -358,12 +307,12 @@ class CarInterface(object):
       ret.centerToFront = ret.wheelbase * 0.41
       ret.steerRatio = 15.59        # as spec
       tire_stiffness_factor = 0.82
-      ret.rateFFGain = 0.4
-      ret.steerMPCReactTime = -0.1     # increase total MPC projected time by 25 ms
-      ret.steerMPCDampTime = 0.28       # dampen desired angle over 250ms (5 mpc cycles)
-      ret.steerReactTime = 0.001
-      ret.steerDampTime = 0.04
-      ret.steerKpV, ret.steerKiV = [[0.38], [0.11]]
+      ret.rateFFGain = 0.001
+      ret.steerMPCReactTime = 0.0     # increase total MPC projected time by 25 ms
+      ret.steerMPCDampTime = 0.1       # dampen desired angle over 250ms (5 mpc cycles)
+      ret.steerReactTime = 0.0
+      ret.steerDampTime = 0.02
+      ret.steerKpV, ret.steerKiV = [[0.40], [0.20]]
       ret.longitudinalKpBP = [0., 5., 35.]
       ret.longitudinalKpV = [1.2, 0.8, 0.5]
       ret.longitudinalKiBP = [0., 35.]
