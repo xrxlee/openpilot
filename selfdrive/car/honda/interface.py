@@ -345,7 +345,7 @@ class CarInterface(object):
       ret.steerMPCDampTime = 0.1       # dampen desired angle over 250ms (5 mpc cycles)
       ret.steerReactTime = 0.0
       ret.steerDampTime = 0.02
-      ret.steerKpV, ret.steerKiV = [[0.40], [0.20]]
+      ret.steerKpV, ret.steerKiV = [[0.40], [0.23]]
       ret.longitudinalKpBP = [0., 5., 35.]
       ret.longitudinalKpV = [1.2, 0.8, 0.5]
       ret.longitudinalKiBP = [0., 35.]
@@ -363,7 +363,7 @@ class CarInterface(object):
       ret.steerMPCDampTime = 0.1       # dampen desired angle over 250ms (5 mpc cycles)
       ret.steerReactTime = 0.0
       ret.steerDampTime = 0.02
-      ret.steerKpV, ret.steerKiV = [[0.40], [0.20]]
+      ret.steerKpV, ret.steerKiV = [[0.40], [0.23]]
       ret.longitudinalKpBP = [0., 5., 35.]
       ret.longitudinalKpV = [1.2, 0.8, 0.5]
       ret.longitudinalKiBP = [0., 35.]
