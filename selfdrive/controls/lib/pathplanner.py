@@ -58,7 +58,8 @@ class PathPlanner(object):
     v_curv = live100.live100.curvature
     active = live100.live100.active
 
-    angle_offset_bias = live100.live100.angleModelBias + live_parameters.liveParameters.angleOffsetAverage
+    angle_offset_average = live_parameters.liveParameters.angleOffsetAverage
+    angle_offset_bias = live100.live100.angleModelBias + angle_offset_average
 
     self.MP.update(v_ego, md, v_curv)
 
