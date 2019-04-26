@@ -20,7 +20,7 @@ def print_letters(text):
             temp = temp.replace('#','@')
             output[i] += temp
     return '\n'.join(output)
-import sys, termios, tty, os, time
+import sys, termios, tty, time
 
 def getch():
     fd = sys.stdin.fileno()

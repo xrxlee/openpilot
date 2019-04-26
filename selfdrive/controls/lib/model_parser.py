@@ -1,4 +1,3 @@
-import math
 from common.numpy_fast import interp, clip
 from selfdrive.controls.lib.latcontrol_helpers import model_polyfit, calc_desired_path, compute_path_pinv
 from selfdrive.kegman_conf import kegman_conf
