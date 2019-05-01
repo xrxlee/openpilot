@@ -13,7 +13,7 @@ def get_steer_max(CP, v_ego):
 class LatControl(object):
   def __init__(self, CP):
 
-    #kegman = kegman_conf(CP)
+    kegman = kegman_conf(CP)
     self.gernbySteer = True
     self.mpc_frame = 0
     self.total_desired_projection = max(0.0, CP.steerMPCReactTime + CP.steerMPCDampTime)
