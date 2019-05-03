@@ -109,7 +109,7 @@ class LatControl(object):
         steers_max = get_steer_max(CP, v_ego)
         self.pid.pos_limit = steers_max
         self.pid.neg_limit = -steers_max
-        #deadzone = 0.0
+        deadzone = 0.0
 
         if self.gernbySteer:
           angle_feedforward = self.dampened_desired_angle - path_plan.angleOffset
