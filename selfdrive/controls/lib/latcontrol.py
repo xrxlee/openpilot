@@ -122,7 +122,8 @@ class LatControl(object):
           print(steer_feedforward)
 
         output_steer = self.pid.update(self.dampened_desired_angle, self.dampened_angle_steers, check_saturation=(v_ego > 10),
-                                      override=steer_override, feedforward=steer_feedforward, speed=v_ego, deadzone= -0.1)
+                                      override=steer_override, feedforward=steer_feedforward, speed=v_ego, deadzone=deadzone)
+
         if self.gernbySteer and not steer_override and v_ego > 10.0:
           if abs(angle_steers) > (self.angle_ff_bp[0][1] / 2.0):
             self.adjust_angle_gain()
