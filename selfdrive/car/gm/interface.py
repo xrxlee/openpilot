@@ -205,7 +205,7 @@ class CarInterface(object):
 
     # same tuning for Volt and CT6 for now
     ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
-    ret.steerKpV, ret.steerKiV = [[0.2], [0.00]]
+    ret.steerKpV, ret.steerKiV = [[0.2], [0.0001]]
     ret.steerKf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
 
     ret.steerMaxBP = [0.] # m/s
