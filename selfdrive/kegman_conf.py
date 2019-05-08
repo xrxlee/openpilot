@@ -50,7 +50,7 @@ class kegman_conf():
         self.config.update({"brakeStoppingTarget":"0.25"})
         self.element_updated = True
 
-      if "tuneGernby" not in self.config:
+      if "dampMPC" not in self.config:
         self.config.update({"tuneGernby":"1"})
         self.config.update({"Kp":"-1"})
         self.config.update({"Ki":"-1"})
