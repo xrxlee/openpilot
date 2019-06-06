@@ -7,6 +7,7 @@ from common.numpy_fast import interp
 from common.realtime import sec_since_boot
 from selfdrive.swaglog import cloudlog
 from cereal import car
+from selfdrive.kegman_conf import kegman_conf
 
 _DT = 0.01    # 100Hz
 _DT_MPC = 0.05  # 20Hz
