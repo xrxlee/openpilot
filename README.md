@@ -1,32 +1,69 @@
-<b><u>PLEASE DO A FRESH CLONE INSTEAD OF GIT PULL FOR THE LATEST CHANGES</u></b>
+<b>NOTE:  If you have upgraded at any time to v0.5.10 and you want to go back to a branch with v0.5.9 or v0.5.8, then you have to SSH into the Eon and edit the file /data/params/d/ControlsParams and rename "angle_model_bias" to "angle_offset" or your car will have Dash Errors and you'll be scratching your head for hours! 
+
+Pedal Users: Also note that you need to flash your Pedal to go to v0.5.10.  If you want to go back to 0.5.9 or 0.5.8 you need to flash your pedal back to 0.5.9.  Instructions are here:  https://medium.com/@jfrux/comma-pedal-updating-the-firmware-over-can-fa438a3cf910.  Also. After you flash your Pedal..  All hell will break loose on your dash.  Traction control error, Power Steering Error, Trailer Error, OMFG the sky is falling error etc.  DON'T PANIC.  Just drive around a bit and it will disappear after about 2-3 restarts of the car.  Don't rush it I believe it's time dependent as well.  Just drive as normal.  They'll go away.
+</b>
+
+<b>IMPORTANT:</b> I have added the stopping of services for Nidec vehicles, which always have power from the panda.  See feature list below for details.  
+  
 
 This is a fork of comma's openpilot, and contains tweaks for Hondas and GM vehicles 
 
-<b>IMPORTANT!</b>
-<b>Distance Intervals have Changed (AGAIN)</b>
-One bar: 0.9s
-Two bar: 1.3s (initial value)
-Three bar: 1.8s (comma default)
-Four bar: 2.5s
-
 <b>WARNING:</b>  Do NOT depend on OP to stop the car in time if you are approaching an object which is not in motion in the same direction as your car.  The radar will NOT detect the stationary object in time to slow your car enough to stop.  If you are approaching a stopped vehicle you must disengage and brake as radars ignore objects that are not in motion.
 
-<b>NOTICE:</b>  Due to feedback I have turned on OTA updates.  You will receive updates automatically on your Eon so you don't have to reclone or git pull any longer to receive new features.  If you DO NOT want OTA updates then create a file called "/data/no_ota_updates" and it will not perform OTA updates as long as that file exists.  
+<b>NOTICE:</b>  Due to feedback I have turned on OTA updates.  You will receive updates automatically (after rebooting 2X) on your Eon so you don't have to reclone or git pull any longer to receive new features *MADE BETWEEN COMMA RELEASES*.  The reason why I separate the branches by release is because some releases can sometimes cause issues.  Features that I or others add, will continue to be updated when you are on the most current release.  If you DO NOT want OTA updates then create a file called "/data/no_ota_updates" and it will not perform OTA updates as long as that file exists.  
 
 
 I will attempt to detail the changes in each of the branches here:
 
-<b>kegman</b> - this is the default branch which does not include Gernby's resonant feed forward steering (i.e. it's comma's default steering) - it now includes GM code (needs testing)
 
-<b>kegman-plusGernbySteering (Updated Jan 22)</b> - this branch is everything in the kegman branch PLUS a Gernby's LATEST feed forward steering.  This also includes working code for GM cars.  (thx to @jamezz for the code and @cryptokylan for submitting the GM stuff!)
+<b>kegman</b> - this is the default branch which does not include Gernby's resonant feed forward steering (i.e. it's comma's default steering)
 
-<b>kegman-plusPilotAwesomeness</b> - <u>If you have a Honda Pilot, OR Honda Ridgeline use this branch.</u>  It has everything in kegman branch, uses my PID tuning + a magical older version of Gernby's FF steering which just happened to work very well across all driving conditions including slanted (crowned roads), wind gusts, road bumps, centering on curves, and keeping proper distance from curbs.  I have yet to test a combination of FF steering and PID tuning that can beat the performance of this for Honda Pilots.
+<b>kegman-plusGernbySteering</b> - this branch has everything in the kegman branch PLUS Gernby's latest resonant mpc interp steering.  NEW! Now includes a primitive tuning script for your cell phone (or laptop) for live tuning (see feature section below for details)
 
-Note above comments apply to Clarity testing branches as well.
+<b>kegman-plusPilotAwesomeness-0.5.8</b> - <u>Older version of Gernbys steering branch.  Will not be updated.
+<b>New:  kegman-0.5.8-gold</b> - Visiond from 0.5.8 was far superior for weak / faded lane line areas.  I have updated some of the newer features into this edition.  This also "upgrades" PilotAwesomeness-0.5.8.
+
+
+<b>kegman-plusClarity</b> - branch specifically for the Honda Clarity (does not contain Gernby steering)
+
+<b>kegman-plusAccordHybrid</b> - branch broken out for Accord Hybrid due to Insight fingerprint conflict
+
+<b>kegman-plusGernbySteering-plusAccordHybrid</b> - same as plusAccordHybrid branch but with Gernby Steering added
 
 
 List of changes and tweaks (latest changes at the top):
-- <b>Persist some configuration data in JSON file (/data/kegman/json)</b>:  Sometimes you just want to make a tweak and persist some data that doesn't get wiped out the next time OP is updated.  Stuff like:
+- <b>Toggle Comma's live tuning</b>:  Comma live tunes things like alignment, steerRatio etc.  But sometimes it doesn't converge to the right value and throws lane centering off during turns.  This allows you to use /data/openpilot/.tune.sh to toggle the auto-tune to off when the car feels right so that it doesn't tune the car any further than necessary.
+  
+- <b>Live tuner for Kp and Ki</b>:  Tune your Kp and Ki values live using your cell phone by SSHing into the Eon and executing cd /data/openpilot && ./tune.sh
+
+- <b>Kill services if plugged in and Eon batt < kegman.json --> battPercOff</b>  Shutting down of the Eon never worked on Nidec vehicles because the Panda always supplies power.  When Eon senses power it just starts up again.  So I have mitigated the power drain by about 40% when it is discharging in the car.  Reminder that the Eon continues to charge cycling between battChargeMax and battChargeMin in the /data/kegman.json file.  If the car battery falls below carVoltageMinEonShutdown in the /data/kegman.json file WHILE CHARGING THE EON then charging is disabled.  As charging is disabled, the Eon battery will continue to drain until it reaches battPercOff (again in /data/kegman.json) at which point it will shut down services to conserve power.  This will not prevent the Eon from discharging completely but will cut the drainage by about 40%, buying you some more time before it goes dead.  If the Eon is in this "Power Saving" mode you will need to reboot the Eon by pressing on the power button and touching somewhere near the center of the screen (note that the screen will note work).  Also note that if you unplug the Eon and the battery is below battPercOff it will shutdown.  If you reboot the Eon while unplugged, it will give you 3 minutes until it shuts down again unless it is plugged in during this time.  If you unplugged the Eon and forgot to turn it off, it will shutdown when the battery falls below battPercOff.  Hopefully this mitigates the "dead Eon" syndrome that occurs when people have trouble powering their device back up after the battery is completely drained.
+  
+For Bosch vehicles, the Eon will just simply shutdown as usual when battery falls below battPercOff.  Killing of services only occurs for Nidecs.
+
+
+
+- <b>Add @pjlao307's Dashcam Recording</b>:  Sometimes you just want to record a wicked OP run on a twisty highway to show your friends.  Sometimes you want to record a big flashing red error and complain about it and show your friends.  This does a screen video capture of the Eon screen and stores the files in /sdcard/videos on your Eon when the REC button is pressed.  Thanks to @pjlao307 and @theantihero for submitting the PR.
+
+- <b>Stop logging when space hits 18% free space</b>:  Thanks to @emmertex for this easy fix to stop the Eon from filling up while driving when free space is low.
+
+- <b>Added primitive tuning script</b>: To invoke live tuning:  (a) turn on tethering on your Eon,  (b) install JuiceSSH or similar and connect your cellphone to the wifi of the Eon using 192.168.43.1 and import the Comma private key,  (c) in JuiceSSH in the SSH session on the Eon issue cd /data/openpilot command, then ./tune.sh.  The text UI will be shown.  (d) turn "tuneGernby" to a "1"  (e) start driving and change the values to tune your steering.  It is best to have a cell phone mount in your car.  Note:  It takes 3 seconds for any changes to take effect.  
+
+- <b>Replaced dev UI</b> with @perpetuoviator dev UI with brake light icon by @berno22 - Thank you both!  NOTE:  There are lots of conveniences in this UI.  When the car is on, you have to press the top left corner to get to the Settings screen.  If you tap the lower right corner you can see the tmux session.  The brake light icon doesn't work properly with some cars (needs a fingerprint tweak I believe.  The wifi IP address and upload speed is printed on the screen.  The brake icon is so that you can see if OP is causing the brake lights to turn on and off and pissing the guy or gal off behind you. NOTE:  For GM vehicles, the brake icon indicates use of the friction brakes on the vehicle instead of the brake lights themselves.
+<b>UI touch controls:</b>
+[Acess "EON Settings" by touching the top left hand corner (left side of the Speed Limit sign)]
+[Acess "TmuxLog" by touching the bottom right hand corner]
+
+- <b>Added moar JSON parameters</b>:  
+
+"battPercOff": "25",  Turn off the Eon if the Eon battery percentage dips below this value - NOTE this only works when the Eon is NOT powered by the USB cable!
+
+"brakeStoppingTarget": "0.25",  How much OP should mash the brakes when the car is stopped.  Increase if you live in hilly areas and need more standstill braking pressure.
+
+"carVoltageMinEonShutdown": "11800", in mV.  Eon stops charging if car battery goes below this level - NOTE: this is the DISCHARGING voltage.  When the Eon is drawing current the voltage on the battery DROPS.  This is NOT the standing no-load voltage.  I would recommended that you unplug your Eon if you are away from your vehicle for more than a few hours and put a battery charger on your car's battery weekly to avoid wrecking your battery if your Eon stays powered when you shut off the car.
+
+- <b>Tone down PID tuning for Pilot and Ridgline for 0.5.9</b>:  Comma changed latcontrol for 0.5.9, so I had to tone down the PID tuning, reducing steerKpV and steerKiV (to 0.45 and 0.135) because of a slow ping-pong on my 2018 Pilot.  Wheel shaking on 2017 Pilots with 0.5.9 have been reported and this change should help, but may not be sufficient for the 2017 model (and possibly 2016).  2016/7 owners may need to adjust steerKpV and steerKiV manually back to 0.38 and 0.11 in /data/openpilot/selfdrive/car/honda/interface.py to reduce the shake.
+
+- <b>Persist some configuration data in JSON file (/data/kegman.json)</b>:  Sometimes you just want to make a tweak and persist some data that doesn't get wiped out the next time OP is updated.  Stuff like:
 
 
 "battChargeMax": "70",  (Max limit % to stop charging Eon battery)
@@ -41,6 +78,8 @@ List of changes and tweaks (latest changes at the top):
 
 
 ^^^ This file is auto generated here:  <b>/data/kegman.json</b> so it will remain even when you do a fresh clone.  If you mess something up, just delete the file and it will auto generate to default values.  Use vim or nano to edit this file to your heart's content.
+
+- <b>Interpolated (smoothed) the discontinuity of longitudinal braking profiles</b>:  Prior to this enhancement the braking profiles changed very abruptly like a step function, leading to excessive ping-ponging and late braking.  This feature reduces the ping-ponging and varies the braking strength linearly with gap closure speed (the faster the gap closes between you and the lead car, the harder the braking).
 
 - <b>Remember last distance bar interval</b>:  On startup, the car will bring up the last distance interval used before the car was turned off.  For example:  If you were at X bars before you stopped the car or shut the Eon down, the next time you start the car, the distance setting will be X bars.  
 
