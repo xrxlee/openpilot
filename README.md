@@ -20,9 +20,9 @@ I will attempt to detail the changes in each of the branches here:
 
 <b>kegman-plusGernbySteering</b> - this branch has everything in the kegman branch PLUS Gernby's latest resonant mpc interp steering.  NEW! Now includes a primitive tuning script for your cell phone (or laptop) for live tuning (see feature section below for details)
 
-<b>kegman-plusPilotAwesomeness-0.5.8</b> - <u>Older version of Gernbys steering branch.  Will not be updated.
-<b>New:  kegman-0.5.8-gold</b> - Visiond from 0.5.8 was far superior for weak / faded lane line areas.  I have updated some of the newer features into this edition.  This also "upgrades" PilotAwesomeness-0.5.8.
+<b>kegman-plusPilotAwesomeness-0.5.8</b> - <u>Older version of Gernbys steering branch.  Will not be updated but you may use kegman-0.5.8-gold below for updated features.
 
+<b>New: kegman-0.5.8-gold</b> - Visiond from 0.5.8 was far superior for weak / faded lane line areas.  I have updated some of the newer features into this edition such as long control, battery management, and live Kp and Ki tuning.  This also "upgrades" PilotAwesomeness-0.5.8.
 
 <b>kegman-plusClarity</b> - branch specifically for the Honda Clarity (does not contain Gernby steering)
 
