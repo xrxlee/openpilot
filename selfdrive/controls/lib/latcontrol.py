@@ -49,6 +49,7 @@ class LatControl(object):
     self.angle_steers_des_mpc = 0.0
     self.angle_steers_des_prev = 0.0
     self.angle_steers_des_time = 0.0
+    self.mpc_frame = 0
 
   def reset(self):
     self.pid.reset()
