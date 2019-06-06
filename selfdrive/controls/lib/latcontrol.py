@@ -24,6 +24,7 @@ def get_steer_max(CP, v_ego):
 
 class LatControl(object):
   def __init__(self, CP):
+    kegman_conf(CP)
     self.pid = PIController((CP.steerKpBP, CP.steerKpV),
                             (CP.steerKiBP, CP.steerKiV),
                             k_f=CP.steerKf, pos_limit=1.0)
@@ -50,8 +51,24 @@ class LatControl(object):
 
   def reset(self):
     self.pid.reset()
+    
+  def live_tune(self, CP):
+    self.mpc_frame += 1
+    if self.mpc_frame % 300 == 0:
+      # live tuning through /data/openpilot/tune.py overrides interface.py settings
+      kegman = kegman_conf()
+      if kegman.conf['tuneGernby'] == "1":
+        self.steerKpV = [float(kegman.conf['Kp'])]
+        self.steerKiV = [float(kegman.conf['Ki'])]
+        self.pid = PIController((CP.steerKpBP, self.steerKpV),
+                            (CP.steerKiBP, self.steerKiV),
+                            k_f=CP.steerKf, pos_limit=1.0) 
+      self.mpc_frame = 0  
 
   def update(self, active, v_ego, angle_steers, steer_override, d_poly, angle_offset, CP, VM, PL):
+    
+    self.live_tune(CP)
+    
     cur_time = sec_since_boot()
     self.mpc_updated = False
     # TODO: this creates issues in replay when rewinding time: mpc won't run
