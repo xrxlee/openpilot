@@ -3,12 +3,10 @@ from cereal import car, log
 from common.realtime import sec_since_boot
 from common.numpy_fast import clip, interp
 from selfdrive.config import Conversions as CV
-from common.numpy_fast import clip, interp
-from selfdrive.controls.lib.planner import A_ACC_MAX
+from selfdrive.controls.lib.planner import A_ACC_MAX, _A_CRUISE_MAX_V_FOLLOWING
 from selfdrive.controls.lib.drive_helpers import create_event, EventTypes as ET
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.car.gm.values import DBC, CAR, STOCK_CONTROL_MSGS, AUDIO_HUD
-from selfdrive.controls.lib.planner import _A_CRUISE_MAX_V_FOLLOWING
 from selfdrive.car.gm.carstate import CarState, CruiseButtons, get_powertrain_can_parser, get_chassis_can_parser
 
 try:
