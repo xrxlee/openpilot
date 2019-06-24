@@ -25,12 +25,23 @@ def get_steer_max(CP, v_ego):
 
 class LatControl(object):
   def __init__(self, CP):
-    kegman_conf(CP)
+    kegman = kegman_conf(CP)
     self.pid = PIController((CP.steerKpBP, CP.steerKpV),
                             (CP.steerKiBP, CP.steerKiV),
                             k_f=CP.steerKf, pos_limit=1.0)
+
+    if kegman.conf['tuneGernby'] == "1":
+      self.steerRatio = float(kegman.conf['steerRatio'])
+      self.steerRateCost = float(kegman.conf['steerRateCost'])
+    else:
+      self.steerRatio = CP.steerRatio
+      self.steerRateCost = CP.steerRateCost
+    
+    self.steerRateCost_prev = self.steerRateCost
+
     self.last_cloudlog_t = 0.0
-    self.setup_mpc(CP.steerRateCost)
+    self.setup_mpc(self.steerRateCost)
+
   def setup_mpc(self, steer_rate_cost):
     self.libmpc = libmpc_py.libmpc
     self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.LANE, MPC_COST_LAT.HEADING, steer_rate_cost)
@@ -64,7 +75,13 @@ class LatControl(object):
         self.steerKiV = [float(kegman.conf['Ki'])]
         self.pid = PIController((CP.steerKpBP, self.steerKpV),
                             (CP.steerKiBP, self.steerKiV),
-                            k_f=CP.steerKf, pos_limit=1.0) 
+                            k_f=CP.steerKf, pos_limit=1.0)
+        self.steerRatio = float(kegman.conf['steerRatio'])
+        self.steerRateCost = float(kegman.conf['steerRateCost'])
+        if self.steerRateCost != self.steerRateCost_prev:
+          self.setup_mpc(self.steerRateCost)
+          self.steerRateCost_prev = self.steerRateCost
+         
       self.mpc_frame = 0  
 
   def update(self, active, v_ego, angle_steers, steer_override, d_poly, angle_offset, CP, VM, PL):
@@ -85,7 +102,7 @@ class LatControl(object):
       p_poly = libmpc_py.ffi.new("double[4]", list(PL.PP.p_poly))
 
       # account for actuation delay
-      self.cur_state = calc_states_after_delay(self.cur_state, v_ego, angle_steers, curvature_factor, CP.steerRatio, CP.steerActuatorDelay)
+      self.cur_state = calc_states_after_delay(self.cur_state, v_ego, angle_steers, curvature_factor, self.steerRatio, CP.steerActuatorDelay)
 
       v_ego_mpc = max(v_ego, 5.0)  # avoid mpc roughness due to low speed
       self.libmpc.run_mpc(self.cur_state, self.mpc_solution,
@@ -96,11 +113,11 @@ class LatControl(object):
       if active:
         delta_desired = self.mpc_solution[0].delta[1]
       else:
-        delta_desired = math.radians(angle_steers - angle_offset) / CP.steerRatio
+        delta_desired = math.radians(angle_steers - angle_offset) / self.steerRatio
 
       self.cur_state[0].delta = delta_desired
 
-      self.angle_steers_des_mpc = float(math.degrees(delta_desired * CP.steerRatio) + angle_offset)
+      self.angle_steers_des_mpc = float(math.degrees(delta_desired * self.steerRatio) + angle_offset)
       self.angle_steers_des_time = cur_time
       self.mpc_updated = True
 
@@ -108,8 +125,8 @@ class LatControl(object):
       self.mpc_nans = np.any(np.isnan(list(self.mpc_solution[0].delta)))
       t = sec_since_boot()
       if self.mpc_nans:
-        self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.LANE, MPC_COST_LAT.HEADING, CP.steerRateCost)
-        self.cur_state[0].delta = math.radians(angle_steers) / CP.steerRatio
+        self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.LANE, MPC_COST_LAT.HEADING, self.steerRateCost)
+        self.cur_state[0].delta = math.radians(angle_steers) / self.steerRatio
 
         if t > self.last_cloudlog_t + 5.0:
           self.last_cloudlog_t = t

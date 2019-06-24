@@ -18,6 +18,13 @@ class kegman_conf():
     if self.conf['Ki'] == "-1":
       self.conf['Ki'] = str(round(CP.steerKiV[0],3))
       write_conf = True
+    if self.conf['steerRatio'] == "-1":
+      self.conf['steerRatio'] = str(round(CP.steerRatio,3))
+      write_conf = True
+    if self.conf['steerRateCost'] == "-1":
+      self.conf['steerRateCost'] = str(round(CP.steerRateCost,3))
+      write_conf = True
+    
 
     if write_conf:
       self.write_config(self.config)
@@ -39,11 +46,17 @@ class kegman_conf():
         self.config.update({"tuneGernby":"1"})
         self.config.update({"Kp":"-1"})
         self.config.update({"Ki":"-1"})
-	self.element_updated = True
+        self.element_updated = True
 
       if "liveParams" not in self.config:
         self.config.update({"liveParams":"1"})
         self.element_updated = True
+
+      if "steerRatio" not in self.config:
+        self.config.update({"steerRatio":"-1"})
+        self.config.update({"steerRateCost":"-1"})
+        self.element_updated = True
+
 
 
       # Force update battery charge limits to higher values for Big Model
@@ -60,7 +73,7 @@ class kegman_conf():
       self.config = {"cameraOffset":"0.06", "lastTrMode":"1", "battChargeMin":"60", "battChargeMax":"70", \
                      "wheelTouchSeconds":"180", "battPercOff":"25", "carVoltageMinEonShutdown":"11800", \
                      "brakeStoppingTarget":"0.25", "tuneGernby":"1", \
-                     "Kp":"-1", "Ki":"-1", "liveParams":"1"}
+                     "Kp":"-1", "Ki":"-1", "liveParams":"1", "steerRatio":"-1", "steerRateCost":"-1"}
 
       self.write_config(self.config)
     return self.config

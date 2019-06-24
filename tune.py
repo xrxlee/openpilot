@@ -41,7 +41,7 @@ button_delay = 0.2
 kegman = kegman_conf()
 #kegman.conf['tuneGernby'] = "1"
 #kegman.write_config(kegman.conf)
-param = ["tuneGernby", "liveParams", "Kp", "Ki"]
+param = ["tuneGernby", "Kp", "Ki", "steerRatio", "steerRateCost"]
 
 j = 0
 while True:
@@ -132,6 +132,12 @@ while True:
     
   if kegman.conf['liveParams'] != "1" and kegman.conf['liveParams'] != "0":
     kegman.conf['liveParams'] = "1"
+    
+  if float(kegman.conf['steerRatio']) < 1 and float(kegman.conf['steerRatio']) != -1:
+    kegman.conf['steerRatio'] = "1"
+    
+  if float(kegman.conf['steerRateCost']) < 0.01 and float(kegman.conf['steerRateCost']) != -1:
+    kegman.conf['steerRateCost'] = "0.01"  
 
 
   if write_json:
