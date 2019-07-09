@@ -1,4 +1,13 @@
 <b>NOTE:  If you upgrade to 0.6 you cannot go back to 0.5.xx without reflashing your NEOS!</b>
+Here's how to flash back to v9 NEOS if you want to downgrade (it's not that bad)
+
+<b>Instructions to flash back to v9 NEOS for downgrading back to 0.5.xx:</b>
+- the boot and system image files for 0.5.13- are in #hw-unofficial - they are pinned messages (click pin icon at top)
+- download android fastboot
+- press and hold UP vol and Power to go into Fastboot mode
+- connect to PC with USB cord
+- put the system and boot img files in the same directory as fastboot.exe
+- type in these commands (only the ones that start with fastboot): https://github.com/commaai/eon-neos/blob/master/flash.sh#L8-L19
 
 <b>NOTE:  If you have upgraded at any time to v0.5.10 and you want to go back to a branch with v0.5.9 or v0.5.8, then you have to SSH into the Eon and edit the file /data/params/d/ControlsParams and rename "angle_model_bias" to "angle_offset" or your car will have Dash Errors and you'll be scratching your head for hours! 
 
@@ -19,6 +28,8 @@ I will attempt to detail the changes in each of the branches here:
 
 
 <b>kegman</b> - this is the default branch which does not include Gernby's resonant feed forward steering (i.e. it's comma's default steering)
+
+<b>kegman-devUI</b> - for 0.6 some people were having trouble with devUI so I separated the branches out.  
 
 <b>kegman-plusGernbySteering</b> - this branch has everything in the kegman branch PLUS Gernby's latest resonant mpc interp steering.  NEW! Now includes a primitive tuning script for your cell phone (or laptop) for live tuning (see feature section below for details)
 
