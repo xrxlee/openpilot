@@ -291,8 +291,8 @@ class CarInterface(object):
       ret.mass = 4303 * CV.LB_TO_KG + std_cargo
       ret.wheelbase = 2.81
       ret.centerToFront = ret.wheelbase * 0.41
-      ret.steerRatio = 16.65         # as spec
-      tire_stiffness_factor = 0.82
+      ret.steerRatio = 16.0        # as spec
+      tire_stiffness_factor = 0.50
       ret.steerKpV, ret.steerKiV = [[0.45], [0.21]]
       ret.longitudinalKpBP = [0., 5., 35.]
       ret.longitudinalKpV = [1.2, 0.8, 0.5]
