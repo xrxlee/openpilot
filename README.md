@@ -8,6 +8,16 @@ Here's how to flash back to v9 NEOS if you want to downgrade (it's not that bad)
 - connect to PC with USB cord
 - put the system and boot img files in the same directory as fastboot.exe
 - type in these commands (only the ones that start with fastboot): https://github.com/commaai/eon-neos/blob/master/flash.sh#L8-L19
+- restart the Eon, on the setup screen enter your wifi password and SSID and SSH in - after you successfully SSH in reboot
+- when your Eon boots it will ask you to enter install URL:  enter https://openpilot.comma.ai
+- when the Eon reboots it will ask you to upgrade NEOS - STOP - do not say yes
+- SSH into the Eon
+- cd /data
+- rm -rf ./openpilot
+- git clone https://github.com/kegman/openpilot
+- git checkout (one of the non-0.6 branches)
+- reboot
+- enjoy
 
 <b>NOTE:  If you have upgraded at any time to v0.5.10 and you want to go back to a branch with v0.5.9 or v0.5.8, then you have to SSH into the Eon and edit the file /data/params/d/ControlsParams and rename "angle_model_bias" to "angle_offset" or your car will have Dash Errors and you'll be scratching your head for hours! 
 
