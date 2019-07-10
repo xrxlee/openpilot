@@ -31,6 +31,8 @@ I will attempt to detail the changes in each of the branches here:
 
 <b>kegman-devUI</b> - for 0.6 some people were having trouble with devUI so I separated the branches out.  
 
+<b>kegman-trafficML</b> - for CommunityPilot traffic signal machine learning and stop signs.  These branches also upload driving videos to CommunityPilot machine learning servers for the development of stopping at intersections.  Want this feature?  Contribute your videos by using this branch in your intersection laiden drives.
+
 <b>kegman-plusGernbySteering</b> - this branch has everything in the kegman branch PLUS Gernby's latest resonant mpc interp steering.  NEW! Now includes a primitive tuning script for your cell phone (or laptop) for live tuning (see feature section below for details)
 
 <b>kegman-plusPilotAwesomeness-0.5.8</b> - <u>Older version of Gernbys steering branch.  Will not be updated but you may use kegman-0.5.8-gold below for updated features.
