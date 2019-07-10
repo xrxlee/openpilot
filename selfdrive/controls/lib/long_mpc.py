@@ -17,19 +17,31 @@ FOUR_BAR_DISTANCE = 2.3   # in seconds
 
 TR = TWO_BAR_DISTANCE  # default interval
 
- # Variables that change braking profiles
+
+# Variables that change braking profiles
 CITY_SPEED = 19.44  # braking profile changes when below this speed based on following dynamics below [m/s]
 STOPPING_DISTANCE = 2  # increase distance from lead car when stopped
 
-# Braking profile changes (makes the car brake harder because it wants to be farther from the lead car - increase to brake harder)
+# City braking profile changes (makes the car brake harder because it wants to be farther from the lead car - increase to brake harder)
 ONE_BAR_PROFILE = [ONE_BAR_DISTANCE, 2.5]
-ONE_BAR_PROFILE_BP = [0.0, 3.0]
+ONE_BAR_PROFILE_BP = [0.0, 2.75]
 
 TWO_BAR_PROFILE = [TWO_BAR_DISTANCE, 2.5]
 TWO_BAR_PROFILE_BP = [0.0, 3.0]
 
 THREE_BAR_PROFILE = [THREE_BAR_DISTANCE, 2.5]
 THREE_BAR_PROFILE_BP = [0.0, 4.0]
+
+# Highway braking profiles
+H_ONE_BAR_PROFILE = [ONE_BAR_DISTANCE, ONE_BAR_DISTANCE+0.3]
+H_ONE_BAR_PROFILE_BP = [0.0, 2.5]
+
+H_TWO_BAR_PROFILE = [TWO_BAR_DISTANCE, TWO_BAR_DISTANCE+0.2]
+H_TWO_BAR_PROFILE_BP = [0.0, 3.0]
+
+H_THREE_BAR_PROFILE = [THREE_BAR_DISTANCE, THREE_BAR_DISTANCE+0.1]
+H_THREE_BAR_PROFILE_BP = [0.0, 4.0]
+
 
 class LongitudinalMpc(object):
   def __init__(self, mpc_id, live_longitudinal_mpc):
@@ -118,14 +130,13 @@ class LongitudinalMpc(object):
     # Calculate conditions
     self.v_rel = v_lead - v_ego   # calculate relative velocity vs lead car
 
-   
+    
     # Is the car running surface street speeds?
     if v_ego < CITY_SPEED:
       self.street_speed = 1
     else:
       self.street_speed = 0
-
-
+      
     # Calculate mpc
     # Adjust distance from lead car when distance button pressed 
     if CS.carState.readdistancelines == 1:
@@ -133,7 +144,7 @@ class LongitudinalMpc(object):
       if self.street_speed:
         TR = interp(-self.v_rel, ONE_BAR_PROFILE_BP, ONE_BAR_PROFILE)  
       else:
-        TR = ONE_BAR_DISTANCE 
+        TR = interp(-self.v_rel, H_ONE_BAR_PROFILE_BP, H_ONE_BAR_PROFILE) 
       if CS.carState.readdistancelines != self.lastTR:
         self.libmpc.init(MPC_COST_LONG.TTC, 1.0, MPC_COST_LONG.ACCELERATION, MPC_COST_LONG.JERK)
         self.lastTR = CS.carState.readdistancelines  
@@ -143,7 +154,7 @@ class LongitudinalMpc(object):
       if self.street_speed:
         TR = interp(-self.v_rel, TWO_BAR_PROFILE_BP, TWO_BAR_PROFILE)
       else:
-        TR = TWO_BAR_DISTANCE 
+        TR = interp(-self.v_rel, H_TWO_BAR_PROFILE_BP, H_TWO_BAR_PROFILE)
       if CS.carState.readdistancelines != self.lastTR:
         self.libmpc.init(MPC_COST_LONG.TTC, MPC_COST_LONG.DISTANCE, MPC_COST_LONG.ACCELERATION, MPC_COST_LONG.JERK)
         self.lastTR = CS.carState.readdistancelines  
@@ -153,7 +164,7 @@ class LongitudinalMpc(object):
       #if self.street_speed and (self.lead_car_gap_shrinking or self.tailgating):
         TR = interp(-self.v_rel, THREE_BAR_PROFILE_BP, THREE_BAR_PROFILE)
       else:
-        TR = THREE_BAR_DISTANCE 
+        TR = interp(-self.v_rel, H_THREE_BAR_PROFILE_BP, H_THREE_BAR_PROFILE)
       if CS.carState.readdistancelines != self.lastTR:
         self.libmpc.init(MPC_COST_LONG.TTC, MPC_COST_LONG.DISTANCE, MPC_COST_LONG.ACCELERATION, MPC_COST_LONG.JERK)
         self.lastTR = CS.carState.readdistancelines   
@@ -167,6 +178,7 @@ class LongitudinalMpc(object):
     else:
      TR = TWO_BAR_DISTANCE # if readdistancelines != 1,2,3,4
      self.libmpc.init(MPC_COST_LONG.TTC, MPC_COST_LONG.DISTANCE, MPC_COST_LONG.ACCELERATION, MPC_COST_LONG.JERK)
+   
 
     
     
