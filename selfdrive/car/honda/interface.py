@@ -8,7 +8,7 @@ from selfdrive.swaglog import cloudlog
 from selfdrive.config import Conversions as CV
 from selfdrive.controls.lib.drive_helpers import create_event, EventTypes as ET, get_events
 from selfdrive.controls.lib.vehicle_model import VehicleModel
-from selfdrive.car.honda.carstate import CarState, get_can_parser, get_cam_can_parser
+from selfdrive.car.honda.carstate import CarState, get_can_parser
 from selfdrive.car.honda.values import CruiseButtons, CAR, HONDA_BOSCH, AUDIO_HUD, VISUAL_HUD, CAMERA_MSGS
 from selfdrive.car import STD_CARGO_KG
 from selfdrive.controls.lib.planner import _A_CRUISE_MAX_V_FOLLOWING
@@ -192,7 +192,7 @@ class CarInterface(object):
  
     elif candidate == CAR.CLARITY:
       stop_and_go = True
-      ret.mass = 4052. * CV.LB_TO_KG + std_cargo
+      ret.mass = 4052. * CV.LB_TO_KG + STD_CARGO_KG
       ret.wheelbase = 2.75
       ret.centerToFront = ret.wheelbase * 0.4
       ret.steerRatio = 17.03  # 12.72 is end-to-end spec
