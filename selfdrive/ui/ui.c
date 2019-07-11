@@ -194,8 +194,6 @@ typedef struct UIScene {
   bool leftBlinker;
   bool rightBlinker;
   int blinker_blinkingrate;
-  int spammedButton;
-  int spammedButtonTimeout;
 
   bool is_playing_alert;
 } UIScene;
@@ -324,7 +322,6 @@ typedef struct UIState {
   track_vertices_data track_vertices[2];
 
   bool ignoreLayout;
-  unsigned long lastdriveEnd;
   int touchTimeout;
 
 } UIState;
@@ -531,6 +528,7 @@ static void ui_init(UIState *s) {
   s->livempc_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8035");
   s->plus_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8037");
   s->gps_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8032");
+  s->carstate_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8021");
 
 #ifdef SHOW_SPEEDLIMIT
   s->map_data_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8065");
@@ -676,7 +674,6 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
       .front_box_height = ui_info.front_box_height,
       .world_objects_visible = false,  // Invisible until we receive a calibration message.
       .gps_planner_active = false,
-      .spammedButton = -1,
   };
 
   s->rgb_width = back_bufs.width;
@@ -950,15 +947,27 @@ const UIScene *scene = &s->scene;
   nvgClosePath(s->vg);
 
   NVGpaint track_bg;
-  if (is_mpc) {
+  if (scene->engaged) {
     // Draw colored MPC track
-    const uint8_t *clr = bg_colors[s->status];
-    track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-      nvgRGBA(clr[0], clr[1], clr[2], 255), nvgRGBA(clr[0], clr[1], clr[2], 255/2));
+    // Why isn't is_mpc not working?
+    //const uint8_t *clr = bg_colors[s->status];
+    if(((int)(scene->angleSteers) < -6) || ((int)(scene->angleSteers) > 6)) {
+      // Draw orange vision track
+      track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
+        nvgRGBA(225, 115, 0, 225), nvgRGBA(225, 135, 3, 255/2));
+    } else if(((int)(scene->angleSteers) < -12) || ((int)(scene->angleSteers) > 12)) {
+       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
+         nvgRGBA(255, 50, 0, 255), nvgRGBA(255, 100, 3, 255/2));
+    } else {
+      // Draw green vision track
+      track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
+        nvgRGBA(23, 170, 66, 200), nvgRGBA(19, 143, 55, 255/2));
+    }
+    //nvgRGBA(clr[0], clr[1], clr[2], 255), nvgRGBA(clr[0], clr[1], clr[2], 255/2));
   } else {
     // Draw white vision track
     track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-      nvgRGBA(255, 255, 255, 255), nvgRGBA(255, 255, 255, 0));
+      nvgRGBA(255, 255, 255, 200), nvgRGBA(255, 255, 255, 0));
   }
 
   nvgFillPaint(s->vg, track_bg);
@@ -1534,7 +1543,7 @@ static void ui_draw_vision_maxspeed(UIState *s) {
 
   // Draw Background
   nvgBeginPath(s->vg);
-  nvgRoundedRect(s->vg, viz_maxspeed_x, viz_maxspeed_y, viz_maxspeed_w, viz_maxspeed_h, 30);
+  nvgRoundedRect(s->vg, viz_maxspeed_x, viz_maxspeed_y, viz_maxspeed_w, viz_maxspeed_h, 20);
   if (is_set_over_limit) {
     nvgFillColor(s->vg, nvgRGBA(218, 111, 37, 180));
   } else {
@@ -1544,7 +1553,7 @@ static void ui_draw_vision_maxspeed(UIState *s) {
 
   // Draw Border
   nvgBeginPath(s->vg);
-  nvgRoundedRect(s->vg, viz_maxspeed_x, viz_maxspeed_y, viz_maxspeed_w, viz_maxspeed_h, 30);
+  nvgRoundedRect(s->vg, viz_maxspeed_x, viz_maxspeed_y, viz_maxspeed_w, viz_maxspeed_h, 20);
   if (is_set_over_limit) {
     nvgStrokeColor(s->vg, nvgRGBA(218, 111, 37, 255));
   } else if (is_speedlim_valid && !s->is_ego_over_limit) {
@@ -1566,7 +1575,7 @@ static void ui_draw_vision_maxspeed(UIState *s) {
   } else {
     nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 100));
   }
-  nvgText(s->vg, viz_maxspeed_x+(viz_maxspeed_xo/2)+(viz_maxspeed_w/2), 148, "MAX", NULL);
+  nvgText(s->vg, viz_maxspeed_x+(viz_maxspeed_xo/2)+(viz_maxspeed_w/2), 148-bdr_is, "MAX", NULL);
 
   // Draw Speed Text
   nvgFontFace(s->vg, "sans-bold");
@@ -1574,12 +1583,12 @@ static void ui_draw_vision_maxspeed(UIState *s) {
   if (is_cruise_set) {
     snprintf(maxspeed_str, sizeof(maxspeed_str), "%d", maxspeed_calc);
     nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 255));
-    nvgText(s->vg, viz_maxspeed_x+(viz_maxspeed_xo/2)+(viz_maxspeed_w/2), 242, maxspeed_str, NULL);
+    nvgText(s->vg, viz_maxspeed_x+(viz_maxspeed_xo/2)+(viz_maxspeed_w/2), 242-bdr_is, maxspeed_str, NULL);
   } else {
     nvgFontFace(s->vg, "sans-semibold");
     nvgFontSize(s->vg, 42*2.5);
     nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 100));
-    nvgText(s->vg, viz_maxspeed_x+(viz_maxspeed_xo/2)+(viz_maxspeed_w/2), 242, "-", NULL);
+    nvgText(s->vg, viz_maxspeed_x+(viz_maxspeed_xo/2)+(viz_maxspeed_w/2), 242-bdr_is, "-", NULL);
   }
 
 #ifdef DEBUG_TURN
@@ -1725,7 +1734,7 @@ static void ui_draw_vision_speed(UIState *s) {
   if (s->is_metric) {
     snprintf(speed_str, sizeof(speed_str), "%d", (int)(speed * 3.6 + 0.5));
   } else {
-    snprintf(speed_str, sizeof(speed_str), "%d", (int)(speed * 2.2369363 + 0.5));
+    snprintf(speed_str, sizeof(speed_str), "%d", (int)(speed * 2.2374144 + 0.5));
   }
   nvgFontFace(s->vg, "sans-bold");
   nvgFontSize(s->vg, 96*2.5);
@@ -2350,9 +2359,6 @@ static void ui_update(UIState *s) {
   int err;
 
   if (s->vision_connect_firstrun) {
-    s->carstate_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8021");
-    assert(s->carstate_sock_raw);
-    s->lastdriveEnd = 0;
     // cant run this in connector thread because opengl.
     // do this here for now in lieu of a run_on_main_thread event
 
@@ -2534,7 +2540,7 @@ static void ui_update(UIState *s) {
 
     if (polls[0].revents || polls[1].revents || polls[2].revents ||
         polls[3].revents || polls[4].revents || polls[6].revents ||
-        polls[7].revents || polls[plus_sock_num].revents) {
+        polls[8].revents || polls[9].revents || polls[plus_sock_num].revents) {
       // awake on any (old) activity
       set_awake(s, true);
     }
@@ -2559,7 +2565,11 @@ static void ui_update(UIState *s) {
       struct cereal_GpsLocationData datad;
       cereal_read_GpsLocationData(&datad, eventd.gpsLocation);
 
-      s->scene.gpsAccuracy = datad.accuracy;
+      if (!datad.accuracy) {
+        s->scene.gpsAccuracy = 99.99;
+      } else {
+        s->scene.gpsAccuracy = datad.accuracy;
+      }
       if (s->scene.gpsAccuracy > 100)
       {
         s->scene.gpsAccuracy = 99.99;
@@ -2791,7 +2801,6 @@ int main(int argc, char* argv[]) {
       .ui_viz_rx = (box_x - sbr_w + bdr_is * 2),
       .ui_viz_rw = (box_w + sbr_w - (bdr_is * 2)),
       .ui_viz_ro = 0,
-      .spammedButton = -1,
   };
 
   pthread_t connect_thread_handle;
@@ -2926,11 +2935,6 @@ int main(int argc, char* argv[]) {
         old_draws = draws;
       }
 #endif
-    }
-    if(s->scene.spammedButton!=-1) {
-      s->scene.spammedButtonTimeout--;
-      if(s->scene.spammedButtonTimeout<=0)
-        s->scene.spammedButton=-1;
     }
     if (s->volume_timeout > 0) {
       s->volume_timeout--;
