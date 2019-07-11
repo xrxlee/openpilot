@@ -4,7 +4,7 @@ Here's how to flash back to v9 NEOS if you want to downgrade (it's not that bad)
 <b>Instructions to flash back to v9 NEOS for downgrading back to 0.5.xx:</b>
 - the boot and system image files for 0.5.13- are in #hw-unofficial - they are pinned messages (click pin icon at top)
 - download android fastboot
-- press and hold UP vol and Power to go into Fastboot mode
+- press and hold UP vol and Power to go into Fastboot mode (Eon Gold is hold DOWN and Power)
 - connect to PC with USB cord
 - put the system and boot img files in the same directory as fastboot.exe
 - type in these commands (only the ones that start with fastboot): https://github.com/commaai/eon-neos/blob/master/flash.sh#L8-L19
