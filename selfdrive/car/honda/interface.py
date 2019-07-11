@@ -412,7 +412,7 @@ class CarInterface(object):
     # ******************* do can recv *******************
     canMonoTimes = []
     can_rcv_valid, _ = self.cp.update(int(sec_since_boot() * 1e9), True)
-    cam_rcv_valid, _ = self.cp_cam.update(int(sec_since_boot() * 1e9), False)
+    #cam_rcv_valid, _ = self.cp_cam.update(int(sec_since_boot() * 1e9), False)
 
     self.cp.update(int(sec_since_boot() * 1e9), False)
     #self.cp_cam.update(int(sec_since_boot() * 1e9), False) #Clarity
@@ -527,10 +527,6 @@ class CarInterface(object):
     # events
     events = []
 
-    if not self.CS.can_valid:
-      self.can_invalid_count += 1
-    else:
-      self.can_invalid_count = 0
 #Clarity
 #    if not self.CS.cam_can_valid and self.CP.enableCamera:
 #      self.cam_can_invalid_count += 1
