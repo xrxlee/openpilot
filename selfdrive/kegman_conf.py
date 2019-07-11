@@ -127,7 +127,7 @@ class kegman_conf():
         self.write_config(self.config)
 
     else:
-      if self.type == "pid" or CP.lateralTuning.which() == "pid":
+      if CP is None or self.type == "pid" or CP.lateralTuning.which() == "pid":
         self.config = {"type":"pid","Kp":"-1", "Ki":"-1", "Kf":"-1", "dampTime":"-1", "reactMPC":"-1", "rateFFGain":"-1", \
                      "cameraOffset":"0.06", "lastTrMode":"1", "battChargeMin":"60", "battChargeMax":"70", \
                      "wheelTouchSeconds":"180", "battPercOff":"25", "carVoltageMinEonShutdown":"11800", \
@@ -151,5 +151,3 @@ class kegman_conf():
       with open('/data/kegman.json', 'w') as f:
         json.dump(self.config, f, indent=2, sort_keys=True)
         os.chmod("/data/kegman.json", 0o764)
-import json
-import os
