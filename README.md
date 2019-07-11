@@ -2,7 +2,7 @@
 Here's how to flash back to v9 NEOS if you want to downgrade (it's not that bad)
 
 <b>Instructions to flash back to v9 NEOS for downgrading back to 0.5.xx:</b>
-- the boot and system image files for 0.5.13- are in #hw-unofficial - they are pinned messages (click pin icon at top)
+- the boot and system image files for v9 NEOS - are in #hw-unofficial - look for the 0.5.13 - they are pinned messages (click pin icon at top)
 - download android fastboot
 - press and hold UP vol and Power to go into Fastboot mode (Eon Gold is hold DOWN and Power)
 - connect to PC with USB cord
@@ -15,6 +15,7 @@ Here's how to flash back to v9 NEOS if you want to downgrade (it's not that bad)
 - cd /data
 - rm -rf ./openpilot
 - git clone https://github.com/kegman/openpilot
+- cd openpilot
 - git checkout (one of the non-0.6 branches)
 - reboot
 - enjoy
