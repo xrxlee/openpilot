@@ -96,6 +96,11 @@ class CarInterface(object):
     else:
       self.compute_gb = compute_gb_honda
 
+    if self.CS.CP.carFingerprint in HONDA_BOSCH:
+      self.bosch_honda = True
+    else:
+      self.bosch_honda = False
+
   @staticmethod
   def calc_accel_override(a_ego, a_target, v_ego, v_target):
 
@@ -161,6 +166,7 @@ class CarInterface(object):
     rotationalInertia_civic = 2500
     tireStiffnessFront_civic = 192150
     tireStiffnessRear_civic = 202500
+    ret.steerLimitAlert = True
 
     # Optimized car params: tire_stiffness_factor and steerRatio are a result of a vehicle
     # model optimization process. Certain Hondas have an extra steering sensor at the bottom
@@ -171,6 +177,9 @@ class CarInterface(object):
 
     ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
     ret.lateralTuning.pid.kf = 0.00006 # conservative feed-forward
+    ret.lateralTuning.pid.dampTime = 0.02
+    ret.lateralTuning.pid.reactMPC = -0.05
+    ret.lateralTuning.pid.rateFFGain = 0.4
 
     if candidate in [CAR.CIVIC, CAR.CIVIC_BOSCH]:
       stop_and_go = True
@@ -189,6 +198,9 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [3.6, 2.4, 1.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.54, 0.36]
+      ret.lateralTuning.pid.dampTime = 0.02
+      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate in (CAR.ACCORD, CAR.ACCORD_15, CAR.ACCORDH):
       stop_and_go = True
@@ -204,6 +216,10 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
+      ret.lateralTuning.pid.dampTime = 0.02
+      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.rateFFGain = 0.4
+      ret.steerLimitAlert = False
 
     elif candidate == CAR.ACURA_ILX:
       stop_and_go = False
@@ -217,6 +233,9 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
+      ret.lateralTuning.pid.dampTime = 0.02
+      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate == CAR.CRV:
       stop_and_go = False
@@ -230,6 +249,9 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
+      ret.lateralTuning.pid.dampTime = 0.02
+      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate == CAR.CRV_5G:
       stop_and_go = True
@@ -244,6 +266,9 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
+      ret.lateralTuning.pid.dampTime = 0.02
+      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate == CAR.CRV_HYBRID:
       stop_and_go = True
@@ -258,6 +283,9 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
+      ret.lateralTuning.pid.dampTime = 0.02
+      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate == CAR.ACURA_RDX:
       stop_and_go = False
@@ -271,6 +299,9 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
+      ret.lateralTuning.pid.dampTime = 0.02
+      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate == CAR.INSIGHT:
       stop_and_go = True
@@ -297,6 +328,9 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
+      ret.lateralTuning.pid.dampTime = 0.02
+      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate == CAR.ODYSSEY_CHN:
       stop_and_go = False
@@ -310,6 +344,9 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
+      ret.lateralTuning.pid.dampTime = 0.02
+      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate in (CAR.PILOT, CAR.PILOT_2019):
       stop_and_go = False
@@ -323,6 +360,9 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
+      ret.lateralTuning.pid.dampTime = 0.02
+      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate == CAR.RIDGELINE:
       stop_and_go = False
@@ -336,6 +376,9 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
+      ret.lateralTuning.pid.dampTime = 0.02
+      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.rateFFGain = 0.4
 
     else:
       raise ValueError("unsupported car %s" % candidate)
@@ -376,7 +419,7 @@ class CarInterface(object):
     else:
       ret.gasMaxBP = [0.]  # m/s
       ret.gasMaxV = [0.] # max gas allowed
-    
+
     #ret.gasMaxBP = [0.]  # m/s
     #ret.gasMaxV = [0.6] if ret.enableGasInterceptor else [0.] # max gas allowed
     ret.brakeMaxBP = [5., 20.]  # m/s
@@ -386,11 +429,10 @@ class CarInterface(object):
     ret.longitudinalTuning.deadzoneV = [0.]
 
     ret.stoppingControl = True
-    ret.steerLimitAlert = True
     ret.startAccel = 0.5
 
     ret.steerActuatorDelay = 0.1
-    ret.steerRateCost = 0.5
+    ret.steerRateCost = 0.3
 
     return ret
 
@@ -450,7 +492,7 @@ class CarInterface(object):
     ret.cruiseState.available = bool(self.CS.main_on)
     ret.cruiseState.speedOffset = self.CS.cruise_speed_offset
     ret.cruiseState.standstill = False
-    
+
     ret.readdistancelines = self.CS.read_distance_lines
     ret.lkMode = self.CS.lkMode
 
@@ -546,11 +588,11 @@ class CarInterface(object):
       events.append(create_event('speedTooLow', [ET.NO_ENTRY]))
 
     # disable on pedals rising edge or when brake is pressed and speed isn't zero
-    if (ret.gasPressed and not self.gas_pressed_prev) or \
+    if (ret.gasPressed and not self.gas_pressed_prev and not self.bosch_honda) or \
        (ret.brakePressed and (not self.brake_pressed_prev or ret.vEgo > 0.001)):
       events.append(create_event('pedalPressed', [ET.NO_ENTRY, ET.USER_DISABLE]))
 
-    if ret.gasPressed:
+    if ret.gasPressed and not self.bosch_honda:
       events.append(create_event('pedalPressed', [ET.PRE_ENABLE]))
 
     # it can happen that car cruise disables while comma system is enabled: need to
@@ -561,7 +603,7 @@ class CarInterface(object):
       #  events.append(create_event('speedTooLow', [ET.IMMEDIATE_DISABLE]))
       #else:
         events.append(create_event("cruiseDisabled", [ET.IMMEDIATE_DISABLE]))   # send loud alert if slow and cruise disables during braking
-      
+
     if self.CS.CP.minEnableSpeed > 0 and ret.vEgo < 0.001:
       events.append(create_event('manualRestart', [ET.WARNING]))
 

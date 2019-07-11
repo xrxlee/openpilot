@@ -176,6 +176,6 @@ class CarState(object):
 
     # Update Friction Brakes from Chassis Canbus
     self.frictionBrakesActive = bool(ch_cp.vl["EBCMFrictionBrakeStatus"]["FrictionBrakePressure"] != 0)
-    
+
   def get_follow_level(self):
     return self.follow_level

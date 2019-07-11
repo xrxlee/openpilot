@@ -217,7 +217,7 @@ class CarInterface(object):
     ret.startAccel = 0.8
 
     ret.steerActuatorDelay = 0.1  # Default delay, not measured yet
-    ret.steerRateCost = 1.0
+    ret.steerRateCost = 0.6
     ret.steerControlType = car.CarParams.SteerControlType.torque
 
     return ret
@@ -227,7 +227,7 @@ class CarInterface(object):
 
     self.ch_cp.update(int(sec_since_boot() * 1e9), True)
     can_rcv_valid, _ = self.pt_cp.update(int(sec_since_boot() * 1e9), True)
-    
+
     self.CS.update(self.pt_cp, self.ch_cp)
 
     # create message
@@ -254,7 +254,7 @@ class CarInterface(object):
     ret.brake = self.CS.user_brake / 0xd0
     ret.brakePressed = self.CS.brake_pressed
     ret.brakeLights = self.CS.frictionBrakesActive
-    
+
     # steering wheel
     ret.steeringAngle = self.CS.angle_steers
 
@@ -314,7 +314,7 @@ class CarInterface(object):
       buttonEvents.append(be)
 
     ret.buttonEvents = buttonEvents
-    
+
     if cruiseEnabled and self.CS.lka_button and self.CS.lka_button != self.CS.prev_lka_button:
       self.CS.lkMode = not self.CS.lkMode
 
@@ -324,7 +324,7 @@ class CarInterface(object):
          self.CS.follow_level = 3
 
     events = []
-    
+
     if cruiseEnabled and (self.CS.left_blinker_on or self.CS.right_blinker_on):
        events.append(create_event('manualSteeringRequiredBlinkersOn', [ET.WARNING]))
 

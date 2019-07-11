@@ -63,11 +63,15 @@ class CarInterface(object):
     rotationalInertia_civic = 2500
     tireStiffnessFront_civic = 192150
     tireStiffnessRear_civic = 202500
+    ret.steerRateCost = 0.7
 
     ret.steerActuatorDelay = 0.12  # Default delay, Prius has larger delay
     if candidate != CAR.PRIUS:
       ret.lateralTuning.init('pid')
       ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
+      ret.lateralTuning.pid.dampTime = 0.1
+      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.rateFFGain = 0.4
 
     if candidate == CAR.PRIUS:
       stop_and_go = True
@@ -78,10 +82,11 @@ class CarInterface(object):
       ret.mass = 3045. * CV.LB_TO_KG + STD_CARGO_KG
 
       ret.lateralTuning.init('indi')
-      ret.lateralTuning.indi.innerLoopGain = 4.0
-      ret.lateralTuning.indi.outerLoopGain = 3.0
-      ret.lateralTuning.indi.timeConstant = 1.0
-      ret.lateralTuning.indi.actuatorEffectiveness = 1.0
+      ret.lateralTuning.indi.innerLoopGain = 7.0
+      ret.lateralTuning.indi.outerLoopGain = 3.5
+      ret.lateralTuning.indi.timeConstant = 0.35
+      ret.lateralTuning.indi.actuatorEffectiveness = 4.0
+      ret.lateralTuning.indi.reactMPC = 0.15
 
       ret.steerActuatorDelay = 0.5
 
@@ -92,7 +97,7 @@ class CarInterface(object):
       ret.steerRatio = 16.30   # 14.5 is spec end-to-end
       tire_stiffness_factor = 0.5533
       ret.mass = 3650. * CV.LB_TO_KG + STD_CARGO_KG  # mean between normal and hybrid
-      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.05]]
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.4], [0.05]]
       ret.lateralTuning.pid.kf = 0.00006   # full torque for 10 deg at 80mph means 0.00007818594
 
     elif candidate == CAR.COROLLA:
@@ -185,7 +190,6 @@ class CarInterface(object):
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
       ret.lateralTuning.pid.kf = 0.00007818594
 
-    ret.steerRateCost = 1.
     ret.centerToFront = ret.wheelbase * 0.44
 
     #detect the Pedal address

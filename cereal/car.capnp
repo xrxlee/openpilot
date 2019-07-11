@@ -350,6 +350,7 @@ struct CarParams {
     kf @4 :Float32;
     dampTime @5 :Float32;
     reactMPC @6 :Float32;
+    rateFFGain@7 :Float32;
   }
 
   struct LongitudinalPIDTuning {

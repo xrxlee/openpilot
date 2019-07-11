@@ -4,7 +4,7 @@ from selfdrive.car import dbc_dict
 AudibleAlert = car.CarControl.HUDControl.AudibleAlert
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
-# Car button codes
+# Car button codes 
 class CruiseButtons:
   RES_ACCEL   = 4
   DECEL_SET   = 3

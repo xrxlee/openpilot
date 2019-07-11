@@ -23,7 +23,7 @@ function launch {
       if [[ "$BRANCH" == "release2" ]]; then
         touch **
       fi
-           
+
       exec "${BASH_SOURCE[0]}"
     fi
   fi

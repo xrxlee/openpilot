@@ -9,7 +9,7 @@ from selfdrive.kegman_conf import kegman_conf
 def parse_gear_shifter(gear, vals):
 
   val_to_capnp = {'P': 'park', 'R': 'reverse', 'N': 'neutral',
-                  'D': 'drive', 'S': 'sport', 'L': 'low'}
+                  'D': 'drive', 'D': 'drive', 'D': 'drive'}  # 'S': 'sport', 'L': 'low'}
   try:
     return val_to_capnp[vals[gear]]
   except KeyError:
@@ -47,10 +47,11 @@ def get_can_signals(CP):
       ("BRAKE_PRESSED", "POWERTRAIN_DATA", 0),
       ("BRAKE_SWITCH", "POWERTRAIN_DATA", 0),
       ("CRUISE_BUTTONS", "SCM_BUTTONS", 0),
-      ("HUD_LEAD", "ACC_HUD", 0), 
+      ("HUD_LEAD", "ACC_HUD", 0),
       ("ESP_DISABLED", "VSA_STATUS", 1),
       ("USER_BRAKE", "VSA_STATUS", 0),
       ("BRAKE_HOLD_ACTIVE", "VSA_STATUS", 0),
+      ("HUD_LEAD", "ACC_HUD", 0),
       ("STEER_STATUS", "STEER_STATUS", 5),
       ("GEAR_SHIFTER", "GEARBOX", 0),
       ("PEDAL_GAS", "POWERTRAIN_DATA", 0),
@@ -237,6 +238,7 @@ class CarState(object):
     elif self.CP.carFingerprint in (CAR.CIVIC_BOSCH, CAR.CRV_HYBRID):
       self.standstill = cp.vl["ENGINE_DATA"]['XMISSION_SPEED'] < 0.1
       self.door_all_closed = not cp.vl["SCM_FEEDBACK"]['DRIVERS_DOOR_OPEN']
+      self.lead_distance = cp.vl["RADAR_HUD"]['LEAD_DISTANCE']
     elif self.CP.carFingerprint == CAR.ODYSSEY_CHN:
       self.standstill = cp.vl["ENGINE_DATA"]['XMISSION_SPEED'] < 0.1
       self.door_all_closed = not cp.vl["SCM_BUTTONS"]['DRIVERS_DOOR_OPEN']
@@ -291,9 +293,16 @@ class CarState(object):
     #self.cruise_setting = cp.vl["SCM_BUTTONS"]['CRUISE_SETTING']
     self.cruise_buttons = cp.vl["SCM_BUTTONS"]['CRUISE_BUTTONS']
 
-    self.blinker_on = cp.vl["SCM_FEEDBACK"]['LEFT_BLINKER'] or cp.vl["SCM_FEEDBACK"]['RIGHT_BLINKER']
-    self.left_blinker_on = cp.vl["SCM_FEEDBACK"]['LEFT_BLINKER']
-    self.right_blinker_on = cp.vl["SCM_FEEDBACK"]['RIGHT_BLINKER']
+    if cp.vl["SCM_FEEDBACK"]['LEFT_BLINKER'] or cp.vl["SCM_FEEDBACK"]['RIGHT_BLINKER']:
+      self.blinker_on = 150
+      self.left_blinker_on = cp.vl["SCM_FEEDBACK"]['LEFT_BLINKER']
+      self.right_blinker_on = cp.vl["SCM_FEEDBACK"]['RIGHT_BLINKER']
+    elif self.blinker_on == 0:
+      self.left_blinker_on = cp.vl["SCM_FEEDBACK"]['LEFT_BLINKER']
+      self.right_blinker_on = cp.vl["SCM_FEEDBACK"]['RIGHT_BLINKER']
+    else:
+      self.blinker_on -= 1
+
     self.brake_hold = cp.vl["VSA_STATUS"]['BRAKE_HOLD_ACTIVE']
 
     if self.CP.carFingerprint in (CAR.CIVIC, CAR.ODYSSEY, CAR.CRV_5G, CAR.ACCORD, CAR.ACCORD_15, CAR.ACCORDH, CAR.CIVIC_BOSCH, CAR.INSIGHT, CAR.CRV_HYBRID):
@@ -352,20 +361,21 @@ class CarState(object):
 
     self.user_brake = cp.vl["VSA_STATUS"]['USER_BRAKE']
     self.pcm_acc_status = cp.vl["POWERTRAIN_DATA"]['ACC_STATUS']
+    self.hud_lead = cp.vl["ACC_HUD"]['HUD_LEAD']
 
     # Gets rid of Pedal Grinding noise when brake is pressed at slow speeds for some models
     if self.CP.carFingerprint in (CAR.PILOT, CAR.PILOT_2019, CAR.RIDGELINE):
       if self.user_brake > 0.05:
         self.brake_pressed = 1
-        
+
     # when user presses distance button on steering wheel
     if self.cruise_setting == 3:
       if cp.vl["SCM_BUTTONS"]["CRUISE_SETTING"] == 0:
         self.trMode = (self.trMode + 1 ) % 4
         self.kegman = kegman_conf()
         self.kegman.conf['lastTrMode'] = str(self.trMode)   # write last distance bar setting to file
-        self.kegman.write_config(self.kegman.conf) 
-        
+        self.kegman.write_config(self.kegman.conf)
+
     # when user presses LKAS button on steering wheel
     if self.cruise_setting == 1:
       if cp.vl["SCM_BUTTONS"]["CRUISE_SETTING"] == 0:
@@ -373,11 +383,11 @@ class CarState(object):
           self.lkMode = False
         else:
           self.lkMode = True
-          
+
     self.prev_cruise_setting = self.cruise_setting
     self.cruise_setting = cp.vl["SCM_BUTTONS"]['CRUISE_SETTING']
     self.read_distance_lines = self.trMode + 1
-      
+
     if self.read_distance_lines <> self.read_distance_lines_prev:
       self.read_distance_lines_prev = self.read_distance_lines
 
