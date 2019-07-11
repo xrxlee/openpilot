@@ -322,7 +322,6 @@ typedef struct UIState {
   track_vertices_data track_vertices[2];
 
   bool ignoreLayout;
-  unsigned long lastdriveEnd;
   int touchTimeout;
 
 } UIState;
@@ -529,6 +528,7 @@ static void ui_init(UIState *s) {
   s->livempc_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8035");
   s->plus_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8037");
   s->gps_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8032");
+  s->carstate_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8021");
 
 #ifdef SHOW_SPEEDLIMIT
   s->map_data_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8065");
@@ -954,17 +954,20 @@ const UIScene *scene = &s->scene;
     if(((int)(scene->angleSteers) < -6) || ((int)(scene->angleSteers) > 6)) {
       // Draw orange vision track
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-        nvgRGBA(225, 100, 0, 255), nvgRGBA(255, 115, 3, 255/2));
+        nvgRGBA(225, 115, 0, 225), nvgRGBA(225, 135, 3, 255/2));
+    } else if(((int)(scene->angleSteers) < -12) || ((int)(scene->angleSteers) > 12)) {
+       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
+         nvgRGBA(255, 50, 0, 255), nvgRGBA(255, 100, 3, 255/2));
     } else {
       // Draw green vision track
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-        nvgRGBA(23, 170, 66, 255), nvgRGBA(19, 143, 55, 255/2));
+        nvgRGBA(23, 170, 66, 200), nvgRGBA(19, 143, 55, 255/2));
     }
     //nvgRGBA(clr[0], clr[1], clr[2], 255), nvgRGBA(clr[0], clr[1], clr[2], 255/2));
   } else {
     // Draw white vision track
     track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-      nvgRGBA(255, 255, 255, 255), nvgRGBA(255, 255, 255, 0));
+      nvgRGBA(255, 255, 255, 200), nvgRGBA(255, 255, 255, 0));
   }
 
   nvgFillPaint(s->vg, track_bg);
@@ -2356,9 +2359,6 @@ static void ui_update(UIState *s) {
   int err;
 
   if (s->vision_connect_firstrun) {
-    s->carstate_sock_raw = sub_sock(s->ctx, "tcp://127.0.0.1:8021");
-    assert(s->carstate_sock_raw);
-    s->lastdriveEnd = 0;
     // cant run this in connector thread because opengl.
     // do this here for now in lieu of a run_on_main_thread event
 
@@ -2540,7 +2540,7 @@ static void ui_update(UIState *s) {
 
     if (polls[0].revents || polls[1].revents || polls[2].revents ||
         polls[3].revents || polls[4].revents || polls[6].revents ||
-        polls[7].revents || polls[plus_sock_num].revents) {
+        polls[8].revents || polls[9].revents || polls[plus_sock_num].revents) {
       // awake on any (old) activity
       set_awake(s, true);
     }
@@ -2565,7 +2565,11 @@ static void ui_update(UIState *s) {
       struct cereal_GpsLocationData datad;
       cereal_read_GpsLocationData(&datad, eventd.gpsLocation);
 
-      s->scene.gpsAccuracy = datad.accuracy;
+      if (datad.accuracy == NULL) {
+        s->scene.gpsAccuracy = 99.99
+      } else {
+        s->scene.gpsAccuracy = datad.accuracy;
+      }
       if (s->scene.gpsAccuracy > 100)
       {
         s->scene.gpsAccuracy = 99.99;
