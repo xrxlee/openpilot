@@ -178,7 +178,7 @@ class CarInterface(object):
     ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
     ret.lateralTuning.pid.kf = 0.00006 # conservative feed-forward
     ret.lateralTuning.pid.dampTime = 0.02
-    ret.lateralTuning.pid.reactMPC = -0.05
+    ret.lateralTuning.pid.reactMPC = 0.0
     ret.lateralTuning.pid.rateFFGain = 0.4
 
     if candidate in [CAR.CIVIC, CAR.CIVIC_BOSCH]:
@@ -198,8 +198,8 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [3.6, 2.4, 1.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.54, 0.36]
-      ret.lateralTuning.pid.dampTime = 0.02
-      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.dampTime = 0.1
+      ret.lateralTuning.pid.reactMPC = 0.0
       ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate in (CAR.ACCORD, CAR.ACCORD_15, CAR.ACCORDH):
@@ -216,8 +216,8 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
-      ret.lateralTuning.pid.dampTime = 0.02
-      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.dampTime = 0.1
+      ret.lateralTuning.pid.reactMPC = 0.0
       ret.lateralTuning.pid.rateFFGain = 0.4
       ret.steerLimitAlert = False
 
@@ -233,8 +233,8 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
-      ret.lateralTuning.pid.dampTime = 0.02
-      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.dampTime = 0.1
+      ret.lateralTuning.pid.reactMPC = 0.0
       ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate == CAR.CRV:
@@ -249,8 +249,8 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
-      ret.lateralTuning.pid.dampTime = 0.02
-      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.dampTime = 0.1
+      ret.lateralTuning.pid.reactMPC = 0.0
       ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate == CAR.CRV_5G:
@@ -266,8 +266,8 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
-      ret.lateralTuning.pid.dampTime = 0.02
-      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.dampTime = 0.1
+      ret.lateralTuning.pid.reactMPC = 0.0
       ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate == CAR.CRV_HYBRID:
@@ -283,8 +283,8 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
-      ret.lateralTuning.pid.dampTime = 0.02
-      ret.lateralTuning.pid.reactMPC = -0.05
+      ret.lateralTuning.pid.dampTime = 0.1
+      ret.lateralTuning.pid.reactMPC = 0.0
       ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate == CAR.ACURA_RDX:
@@ -315,6 +315,9 @@ class CarInterface(object):
       ret.longitudinalTuning.kpV = [1.2, 0.8, 0.5]
       ret.longitudinalTuning.kiBP = [0., 35.]
       ret.longitudinalTuning.kiV = [0.18, 0.12]
+      ret.lateralTuning.pid.dampTime = 0.1
+      ret.lateralTuning.pid.reactMPC = 0.0
+      ret.lateralTuning.pid.rateFFGain = 0.4
 
     elif candidate == CAR.ODYSSEY:
       stop_and_go = False
