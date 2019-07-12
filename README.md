@@ -1,3 +1,5 @@
+This is a fork of comma's openpilot: https://github.com/commaai/openpilot, and contains tweaks for Hondas and GM vehicles.  It is open source and inherits MIT license.  By installing this software you accept all responsibility for anything that might occur while you use it.  All contributors to this fork are not liable.  <b>Use at your own risk.</b>
+
 <b>NOTE:  If you upgrade to 0.6 you cannot go back to 0.5.xx without reflashing your NEOS!</b>
 Here's how to flash back to v9 NEOS if you want to downgrade (it's not that bad)
 
@@ -29,11 +31,6 @@ Here's how to flash back to v9 NEOS if you want to downgrade (it's not that bad)
 
 <b>ALSO IMPORTANT:</b> /data/kegman.json is a file that holds parameters and is used on various branches / forks.  When switching between forks (like @arne182 and @gernby) it is best to rename the existing file so there are no parameter conflicts.  This also holds true when switching between my non-gernby and gernby branches within this repo
   
-
-
-
-This is a fork of comma's openpilot, and contains tweaks for Hondas and GM vehicles.  It is open source and inherits MIT license.  Please use care when using this software - and <b>use at your own risk</b>.
-
 <b>WARNING:</b>  Do NOT depend on OP to stop the car in time if you are approaching an object which is not in motion in the same direction as your car.  The radar will NOT detect the stationary object in time to slow your car enough to stop.  If you are approaching a stopped vehicle you must disengage and brake as radars ignore objects that are not in motion.
 
 <b>NOTICE:</b>  Due to feedback I have turned on OTA updates.  You will receive updates automatically (after rebooting 2X) on your Eon so you don't have to reclone or git pull any longer to receive new features *MADE BETWEEN COMMA RELEASES*.  The reason why I separate the branches by release is because some releases can sometimes cause issues.  Features that I or others add, will continue to be updated when you are on the most current release.  If you DO NOT want OTA updates then create a file called "/data/no_ota_updates" and it will not perform OTA updates as long as that file exists.  
