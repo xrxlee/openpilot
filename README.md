@@ -26,6 +26,8 @@ Pedal Users: Also note that you need to flash your Pedal to go to v0.5.10.  If y
 </b>
 
 <b>IMPORTANT:</b> I have added the stopping of services for Nidec vehicles, which always have power from the panda.  See feature list below for details.  
+
+<b>ALSO IMPORTANT:</b> /data/kegman.json is a file that holds parameters and is used on various branches / forks.  When switching between forks (like @arne182 and @gernby) it is best to rename the existing file so there are no parameter conflicts.  This also holds true when switching between my non-gernby and gernby branches within this repo
   
 
 This is a fork of comma's openpilot, and contains tweaks for Hondas and GM vehicles 
