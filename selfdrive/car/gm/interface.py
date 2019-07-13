@@ -90,6 +90,9 @@ class CarInterface(object):
     ret.carName = "gm"
     ret.carFingerprint = candidate
     ret.carVin = vin
+    ret.lateralTuning.pid.dampTime = 0.02
+    ret.lateralTuning.pid.reactMPC = -0.05
+    ret.lateralTuning.pid.rateFFGain = 0.4
 
     ret.enableCruise = False
 
@@ -257,7 +260,8 @@ class CarInterface(object):
 
     # steering wheel
     ret.steeringAngle = self.CS.angle_steers
-
+    ret.steeringRate = self.CS.angle_steers_rate
+    
     # torque and user override. Driver awareness
     # timer resets when the user uses the steering wheel.
     ret.steeringPressed = self.CS.steer_override
