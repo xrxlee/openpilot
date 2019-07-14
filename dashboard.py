@@ -166,7 +166,7 @@ def dashboard_thread(rate=100):
             if l100.controlsState.lateralControlState.which == "pidState":
               lateral_type = "pid"
               influxFormatString = user_id + ",sources=capnp ff_angle=%s,damp_angle_steers_des=%s,angle_steers_des=%s,angle_steers=%s,steer_override=%s,v_ego=%s,p=%s,p2=%s,i=%s,f=%s,output=%s %s\n"
-              kegmanFormatString = user_id + ",sources=kegman KpV=%s,KiV=%s,Kf=%s,reactMPC=%s,rate_ff_gain=%s,dampTime=%s %s\n"
+              kegmanFormatString = user_id + ",sources=kegman KpV=%s,KiV=%s,Kf=%s,reactMPC=%s,rate_ff_gain=%s,dampTime=%s,polyFactor=%s,reactPoly=%s,dampPoly=%s %s\n"
             else:
               lateral_type = "indi"
               influxFormatString = user_id + ",sources=capnp angle_steers_des=%s,damp_angle_steers_des=%s,angle_steers=%s,steer_override=%s,v_ego=%s,output=%s,indi_angle=%s,indi_rate=%s,indi_rate_des=%s,indi_accel=%s,indi_accel_des=%s,accel_error=%s,delayed_output=%s,indi_delta=%s %s\n"
@@ -250,8 +250,11 @@ def dashboard_thread(rate=100):
                 reactMPC = config['reactMPC']
                 rateFF = config['rateFFGain']
                 dampTime = config['dampTime']
-                kegmanDataString += ("%s,%s,%s,%s,%s,%s,%s|" % \
-                      (steerKpV, steerKiV, steerKf, reactMPC, rateFF, dampTime, receiveTime))
+                polyFactor = config['polyFactor']
+                polyReact = config['polyReact']
+                polyDamp = config['polyDamp']
+                kegmanDataString += ("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s|" % \
+                      (steerKpV, steerKiV, steerKf, reactMPC, rateFF, dampTime, polyFactor, polyReact, polyDamp, receiveTime))
               else:
                 timeConst = config['timeConst']
                 actEffect = config['actEffect']

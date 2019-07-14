@@ -38,9 +38,10 @@ class kegman_conf():
       if self.conf['reactMPC'] == "-1":
         self.conf['reactMPC'] = str(round(CP.lateralTuning.pid.reactMPC,3))
         write_conf = True
-      if self.conf['dampPoly'] == "-1":
-        self.conf['dampPoly'] = str(round(CP.lateralTuning.pid.dampPoly,3))
-        self.conf['reactPoly'] = str(round(CP.lateralTuning.pid.reactPoly,3))
+      if self.conf['polyDamp'] == "-1":
+        self.conf['polyReact'] = str(round(CP.lateralTuning.pid.polyReactTime,3))
+        self.conf['polyDamp'] = str(round(CP.lateralTuning.pid.polyDampTime,3))
+        self.conf['polyFactor'] = str(round(CP.lateralTuning.pid.polyFactor,3))
         write_conf = True
       if self.conf['rateFFGain'] == "-1":
         self.conf['rateFFGain'] = str(round(CP.lateralTuning.pid.rateFFGain,3))
@@ -94,10 +95,15 @@ class kegman_conf():
         if "rateFFGain" not in self.config:
           self.config.update({"rateFFGain":"-1"})
           self.element_updated = True
+        if "polyDamp" not in self.config:
+          self.config.update({"polyFactor":"-1"})
+          self.config.update({"polyDamp":"-1"})
+          self.config.update({"polyReact":"-1"})
+          self.element_updated = True
 
       else:
         if "timeConst" not in self.config:
-          self.config.update({"type":"indi", "timeConst":"-1", "actEffect":"-1", "outerGain":"-1", "innerGain":"-1", "reactMPC":"-1"})
+          self.config.update({"type":"indi", "timeConst":"-1", "actEffect":"-1", "outerGain":"-1", "innerGain":"-1", "reactMPC":"-1", "polyReact":"-1", "polyDamp":"-1", "polyReact":"-1"})
           self.element_updated = True
         if "type" not in self.config:
           self.config.update({"type":"indi"})
@@ -133,6 +139,7 @@ class kegman_conf():
     else:
       if CP is None or self.type == "pid" or CP.lateralTuning.which() == "pid":
         self.config = {"type":"pid","Kp":"-1", "Ki":"-1", "Kf":"-1", "dampTime":"-1", "reactMPC":"-1", "rateFFGain":"-1", \
+                     "polyDamp":"-1","polyReact":"-1","polyFactor":"-1", \
                      "cameraOffset":"0.06", "lastTrMode":"1", "battChargeMin":"60", "battChargeMax":"70", \
                      "wheelTouchSeconds":"180", "battPercOff":"25", "carVoltageMinEonShutdown":"11800", \
                      "brakeStoppingTarget":"0.25", "tuneGernby":"1", "liveParams":"1", "leadDistance":"5"}

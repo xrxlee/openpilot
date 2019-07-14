@@ -43,7 +43,7 @@ button_delay = 0.2
 kegman = kegman_conf()
 #kegman.conf['tuneGernby'] = "1"
 #kegman.write_config(kegman.conf)
-param = ["tuneGernby", "liveParams", "Kp", "Ki", "reactMPC", "dampTime"]
+param = ["tuneGernby", "liveParams", "Kp", "Ki", "reactMPC", "dampTime", "polyFactor", "polyReact", "polyDamp"]
 
 j = 0
 while True:
@@ -52,52 +52,51 @@ while True:
   print ""
   print print_letters(kegman.conf[param[j]])
   print ""
-  print ("1, 3, 5, 7 to incr 0.1, 0.05, 0.01, 0.001")
-  print ("a, d, g, j to decr 0.1, 0.05, 0.01, 0.001")
-  print ("0 / L to make the value 0 / 1")
+  print ("1, 3, 5, 7, 9 to incr 0.2, 0.01, 0.005, 0.0002, 0.00001")
+  print ("a, d, g, j, l (L) to decr 0.2, 0.01, 0.005, 0.0002, 0.00001")
   print ("press SPACE / m for next /prev parameter")
   print ("press z to quit")
 
   char  = getch()
   write_json = False
+  if (char == "9"):
+    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) + 0.00001)
+    write_json = True
+
   if (char == "7"):
-    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) + 0.001)
+    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) + 0.0002)
     write_json = True
 
   if (char == "5"):
-    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) + 0.01)
+    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) + 0.005)
     write_json = True
 
   elif (char == "3"):
-    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) + 0.05)
+    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) + 0.01)
     write_json = True
 
   elif (char == "1"):
-    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) + 0.1)
-    write_json = True
-
-  elif (char == "j"):
-    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) - 0.001)
-    write_json = True
-
-  elif (char == "g"):
-    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) - 0.01)
-    write_json = True
-
-  elif (char == "d"):
-    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) - 0.05)
-    write_json = True
-
-  elif (char == "a"):
-    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) - 0.1)
-    write_json = True
-
-  elif (char == "0"):
-    kegman.conf[param[j]] = "0"
+    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) + 0.2)
     write_json = True
 
   elif (char == "l"):
-    kegman.conf[param[j]] = "1"
+    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) - 0.00001)
+    write_json = True
+
+  elif (char == "j"):
+    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) - 0.0002)
+    write_json = True
+
+  elif (char == "g"):
+    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) - 0.005)
+    write_json = True
+
+  elif (char == "d"):
+    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) - 0.01)
+    write_json = True
+
+  elif (char == "a"):
+    kegman.conf[param[j]] = str(float(kegman.conf[param[j]]) - 0.2)
     write_json = True
 
   elif (char == " "):
