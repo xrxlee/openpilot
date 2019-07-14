@@ -13,7 +13,7 @@ int honda_gas_prev = 0;
 int honda_ego_speed = 0;
 bool honda_bosch_hardware = false;
 bool honda_alt_brake_msg = false;
-bool honda_ACC_allowed = false;
+bool bosch_ACC_allowed = false;
 
 static void honda_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 
@@ -79,7 +79,7 @@ static void honda_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
   if (!gas_interceptor_detected) {
     if (addr == 0x17C) {
       int gas = to_push->RDLR & 0xFF;
-      if (gas && !(honda_gas_prev) && long_controls_allowed && !(honda_bosch_hardware)) {
+      if (gas && !(honda_gas_prev) && long_controls_allowed && !(bosch_ACC_allowed)) {
         controls_allowed = 0;
       }
       honda_gas_prev = gas;
@@ -101,7 +101,7 @@ static int honda_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
 
   // disallow actuator commands if gas or brake (with vehicle moving) are pressed
   // and the the latching controls_allowed flag is True
-  int pedal_pressed = (!honda_bosch_hardware && honda_gas_prev) || (gas_interceptor_prev > HONDA_GAS_INTERCEPTOR_THRESHOLD) ||
+  int pedal_pressed = (!bosch_ACC_allowed && honda_gas_prev) || (gas_interceptor_prev > HONDA_GAS_INTERCEPTOR_THRESHOLD) ||
                       (honda_brake_prev && honda_ego_speed);
   bool current_controls_allowed = controls_allowed && !(pedal_pressed);
 
@@ -119,7 +119,7 @@ static int honda_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
 
   // STEER: safety check
   if ((addr == 0xE4) || (addr == 0x194)) {
-    honda_ACC_allowed = honda_bosch_hardware && (addr == 0xE4);
+    bosch_ACC_allowed = honda_bosch_hardware && (addr == 0xE4);
     if (!current_controls_allowed) {
       if ((to_send->RDLR & 0xFFFF0000) != to_send->RDLR) {
         tx = 0;
@@ -130,7 +130,7 @@ static int honda_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
   // GAS: safety check
   if (addr == 0x200) {
     if (!current_controls_allowed || !long_controls_allowed) {
-      if (!honda_ACC_allowed && (to_send->RDLR & 0xFFFF0000) != to_send->RDLR) {
+      if (!bosch_ACC_allowed && (to_send->RDLR & 0xFFFF0000) != to_send->RDLR) {
         tx = 0;
       }
     }
@@ -160,7 +160,6 @@ static void honda_init(int16_t param) {
 static void honda_bosch_init(int16_t param) {
   controls_allowed = 0;
   honda_bosch_hardware = true;
-  honda_ACC_allowed = true;
   // Checking for alternate brake override from safety parameter
   honda_alt_brake_msg = (param == 1) ? true : false;
 }
