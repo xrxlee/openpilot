@@ -2536,7 +2536,7 @@ static void ui_update(UIState *s) {
       return;
     }
     if (ret == 0) {
-      continue;
+      return;
     }
 
     if (polls[0].revents || polls[1].revents || polls[2].revents ||
@@ -2576,7 +2576,6 @@ static void ui_update(UIState *s) {
       {
         s->scene.gpsAccuracy = 99.8;
       }
-      capn_free(&ctx);
       zmq_msg_close(&msg);
     }
 
