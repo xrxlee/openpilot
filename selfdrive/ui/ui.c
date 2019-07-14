@@ -2579,6 +2579,7 @@ static void ui_update(UIState *s) {
       {
         s->scene.gpsAccuracy = 99.8;
       }
+      capn_free(&ctx);
       zmq_msg_close(&msg);
     }
 
