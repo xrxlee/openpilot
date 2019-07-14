@@ -34,7 +34,6 @@
 #include "common/params.h"
 
 #include "cereal/gen/c/log.capnp.h"
-#include "cereal/gen/c/car.capnp.h"
 #include "slplay.h"
 
 #include "devicestate.c"
@@ -175,6 +174,7 @@ typedef struct UIScene {
 
   uint64_t started_ts;
 
+
   //BB CPU TEMP
   uint16_t maxCpuTemp;
   uint32_t maxBatTemp;
@@ -182,6 +182,7 @@ typedef struct UIScene {
   float freeSpace;
   float angleSteers;
   float angleSteersDes;
+  float output_scale;
   //BB END CPU TEMP
   bool steerOverride;
   // Used to display calibration progress
@@ -952,19 +953,17 @@ const UIScene *scene = &s->scene;
     // Draw colored MPC track
     // Why isn't is_mpc not working?
     //const uint8_t *clr = bg_colors[s->status];
-    if(((int)(scene->angleSteers) < -6) || ((int)(scene->angleSteers) > 6)) {
-      // Draw orange vision track
+    if(scene->steerOverride) {
+      // Draw red vision track when user is overriding
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-        nvgRGBA(225, 115, 0, 225), nvgRGBA(225, 135, 3, 255/2));
-    } else if(((int)(scene->angleSteers) < -12) || ((int)(scene->angleSteers) > 12)) {
-       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-         nvgRGBA(255, 50, 0, 255), nvgRGBA(255, 100, 3, 255/2));
+        nvgRGBA(255, 0, 0, 235), nvgRGBA(225, 10, 3, 255/2));
     } else {
-      // Draw green vision track
+      float scale = fabs((float)s->scene.output_scale);
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-        nvgRGBA(23, 170, 66, 200), nvgRGBA(19, 143, 55, 255/2));
+      nvgRGBA(23+((int)(scale * 202)), 170-((int)(scale * 55)), 66-((int)(scale * 66)), 200+ ((int)(scale * 25))),
+      nvgRGBA(19+((int)(scale * 206)), 143-((int)(scale * 8)), 55-((int)(scale * 52)), (int)(255/2)));
     }
-    //nvgRGBA(clr[0], clr[1], clr[2], 255), nvgRGBA(clr[0], clr[1], clr[2], 255/2));
+
   } else {
     // Draw white vision track
     track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
@@ -2139,6 +2138,10 @@ void handle_message(UIState *s, void *which) {
     struct cereal_ControlsState datad;
     cereal_read_ControlsState(&datad, eventd.controlsState);
 
+    struct cereal_ControlsState_LateralPIDState pdata;
+    cereal_read_ControlsState_LateralPIDState(&pdata, datad.lateralControlState.pidState);
+
+
     if (datad.vCruise != s->scene.v_cruise) {
       s->scene.v_cruise_update_ts = eventd.logMonoTime;
     }
@@ -2152,6 +2155,7 @@ void handle_message(UIState *s, void *which) {
     s->scene.engageable = datad.engageable;
     s->scene.gps_planner_active = datad.gpsPlannerActive;
     s->scene.monitoring_active = datad.driverMonitoringOn;
+    s->scene.output_scale = pdata.output;
 
     s->scene.frontview = datad.rearViewCam;
 
@@ -2566,11 +2570,8 @@ static void ui_update(UIState *s) {
       struct cereal_GpsLocationData datad;
       cereal_read_GpsLocationData(&datad, eventd.gpsLocation);
 
-      if (!datad.accuracy) {
-        s->scene.gpsAccuracy = 99.99;
-      } else {
-        s->scene.gpsAccuracy = datad.accuracy;
-      }
+      s->scene.gpsAccuracy = datad.accuracy;
+
       if (s->scene.gpsAccuracy > 100)
       {
         s->scene.gpsAccuracy = 99.99;
@@ -2579,7 +2580,6 @@ static void ui_update(UIState *s) {
       {
         s->scene.gpsAccuracy = 99.8;
       }
-      capn_free(&ctx);
       zmq_msg_close(&msg);
     }
 
@@ -2794,15 +2794,6 @@ int main(int argc, char* argv[]) {
   UIState *s = &uistate;
   ui_init(s);
   ds_init();
-  s->scene = (UIScene){
-      .frontview = getenv("FRONTVIEW") != NULL,
-      .fullview = getenv("FULLVIEW") != NULL,
-      .world_objects_visible = true, // Invisible until we receive a calibration message.
-      .gps_planner_active = true,
-      .ui_viz_rx = (box_x - sbr_w + bdr_is * 2),
-      .ui_viz_rw = (box_w + sbr_w - (bdr_is * 2)),
-      .ui_viz_ro = 0,
-  };
 
   pthread_t connect_thread_handle;
   err = pthread_create(&connect_thread_handle, NULL,
