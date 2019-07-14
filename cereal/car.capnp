@@ -330,6 +330,11 @@ struct CarParams {
 
   steerLimitAlert @28 :Bool;
 
+  polyGain @39 :Float32;
+  polyDampTime @40 :Float32;
+  polyReactTime @41 :Float32;
+  polyScale @42 :List(List(Float32));
+
   vEgoStopping @29 :Float32; # Speed at which the car goes into stopping state
   directAccelControl @30 :Bool; # Does the car have direct accel control or just gas/brake
   stoppingControl @31 :Bool; # Does the car allows full control even at lows speeds when stopping

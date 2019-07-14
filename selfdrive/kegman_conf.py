@@ -38,6 +38,10 @@ class kegman_conf():
       if self.conf['reactMPC'] == "-1":
         self.conf['reactMPC'] = str(round(CP.lateralTuning.pid.reactMPC,3))
         write_conf = True
+      if self.conf['dampPoly'] == "-1":
+        self.conf['dampPoly'] = str(round(CP.lateralTuning.pid.dampPoly,3))
+        self.conf['reactPoly'] = str(round(CP.lateralTuning.pid.reactPoly,3))
+        write_conf = True
       if self.conf['rateFFGain'] == "-1":
         self.conf['rateFFGain'] = str(round(CP.lateralTuning.pid.rateFFGain,3))
         write_conf = True

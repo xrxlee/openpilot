@@ -97,7 +97,7 @@ class CarInterface(object):
       self.compute_gb = compute_gb_honda
 
     if self.CS.CP.carFingerprint in (CAR.ACCORD, CAR.ACCORD_15, CAR.ACCORDH, CAR.INSIGHT):
-      self.bosch_honda = True
+      self.bosch_honda = False #True
     else:
       self.bosch_honda = False
 
@@ -180,6 +180,11 @@ class CarInterface(object):
     ret.lateralTuning.pid.dampTime = 0.02
     ret.lateralTuning.pid.reactMPC = -0.05
     ret.lateralTuning.pid.rateFFGain = 0.4
+
+    ret.centerFactor = 0.003
+    ret.polyDampTime = 0.1
+    ret.polyReactTime = 1.0
+    ret.polyScale = [[0.0, 0.5, 1.0, 2.0, 5.0], [1.0, 0.5, 0.25, 0.1, 0.0], [1.0, 1.0, 1.0, 1.0, 1.0]]  # [abs rate, scale UP, scale DOWN]
 
     if candidate in [CAR.CIVIC, CAR.CIVIC_BOSCH]:
       stop_and_go = True
