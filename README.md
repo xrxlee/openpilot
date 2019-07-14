@@ -29,7 +29,7 @@ Here's how to flash back to v9 NEOS if you want to downgrade (it's not that bad)
 
 <b>IMPORTANT:</b> I have added the stopping of services for Nidec vehicles, which always have power from the panda.  See feature list below for details.  
 
-<b>ALSO IMPORTANT:</b> /data/kegman.json is a file that holds parameters and is used on various branches / forks.  When switching between forks (like @arne182 and @gernby) it is best to rename the existing file so there are no parameter conflicts.  This also holds true when switching between my non-gernby and gernby branches within this repo
+<b>ALSO IMPORTANT:</b> /data/kegman.json is a file that holds parameters and is used on various branches / forks.  When switching between forks (like @arne182 and @gernby), or between branches within this repo (like non-gernby and gernby), it is best to delete or rename the existing file so there are no parameter conflicts. _Do this before rebooting the EON to compile on the new fork/branch._
   
 <b>WARNING:</b>  Do NOT depend on OP to stop the car in time if you are approaching an object which is not in motion in the same direction as your car.  The radar will NOT detect the stationary object in time to slow your car enough to stop.  If you are approaching a stopped vehicle you must disengage and brake as radars ignore objects that are not in motion.
 
