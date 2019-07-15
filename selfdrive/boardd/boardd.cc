@@ -98,7 +98,7 @@ void *safety_setter_thread(void *s) {
   auto safety_param = car_params.getSafetyParam();
 
   long_sleep_us = 0; //int(((1e6/car_params.getCarCANRate()) -1000) / 2.0);
-  if (long_sleep_us == 0) long_sleep_us = 4500;
+  if (long_sleep_us == 0) long_sleep_us = 4000;
   LOGW("setting safety model: %d with param %d", safety_model, safety_param);
 
   int safety_setting = 0;
@@ -481,7 +481,7 @@ void *can_recv_thread(void *crap) {
     else {
       force_send = true;
       recv_state = 0;
-      wake_time += 1000;
+      wake_time += 2000;
       cur_time = 1e-3 * nanos_since_boot();
       if (wake_time > cur_time) {
         usleep(wake_time - cur_time);
