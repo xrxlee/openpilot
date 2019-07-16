@@ -3,7 +3,10 @@ This is a fork of comma's openpilot: https://github.com/commaai/openpilot, and c
 <b>NOTE:  If you upgrade to 0.6 you cannot go back to 0.5.xx without reflashing your NEOS!</b>
 Here's how to flash back to v9 NEOS if you want to downgrade (it's not that bad)
 
-<b>Instructions to flash back to v9 NEOS for downgrading back to 0.5.xx:</b>
+<b>Thanks to @arne182, you can downgrade NEOS with one command:</b>
+pkill ai.comma.plus.frame && pkill ai.comma.plus.offroad && cd /data && wget  https://raw.githubusercontent.com/commaai/eon-neos/45ce1790dd5f4ef8ef5987fa198a904b69b9ce53/update.json && /data/openpilot/installer/updater/updater file:///data/update.json
+
+<b>Manual Instructions to flash back to v9 NEOS for downgrading back to 0.5.xx:</b>
 - the boot and system image files for v9 NEOS - are in #hw-unofficial - look for the 0.5.13 - they are pinned messages (click pin icon at top)
 - download android fastboot
 - press and hold UP vol and Power to go into Fastboot mode (Eon Gold is hold DOWN and Power)
