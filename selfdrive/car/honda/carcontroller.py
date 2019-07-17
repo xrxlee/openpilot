@@ -6,6 +6,7 @@ from selfdrive.car import create_gas_command
 from selfdrive.car.honda import hondacan
 from selfdrive.car.honda.values import AH, CruiseButtons, CAR
 from selfdrive.can.packer import CANPacker
+from common.params import Params
 from selfdrive.kegman_conf import kegman_conf
 
 kegman = kegman_conf()
