@@ -87,13 +87,6 @@ class CarController(object):
     self.packer = CANPacker(dbc_name)
     self.new_radar_config = False
     self.prev_lead_distance = 0.0
-    #self.params = Params()
-    self.is_metric = Params().get("IsMetric") == "1"
-    if self.is_metric:
-      self.speed_units = 2
-    else:
-      self.speed_units = 3
-
 
 
   def update(self, enabled, CS, frame, actuators, \
