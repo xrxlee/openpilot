@@ -84,9 +84,9 @@ class PathPlanner(object):
     mpc_nans = np.any(np.isnan(list(self.mpc_solution[0].delta)))
 
     if not mpc_nans:
-      self.mpc_angles[0] = math.degrees(self.mpc_solution[0].delta[1] * VM.sR) + angle_offset_average
+      self.mpc_angles[0] = angle_steers
       self.mpc_times[0] = sm.logMonoTime['model'] * 1e-9
-      oversample_limit = 19 if v_ego == 0 else min(19, int(100.0 / v_ego))
+      oversample_limit = 19 if v_ego == 0 else min(19, int(200.0 / v_ego))
       for i in range(1,20):
         if i < 6:
           self.mpc_times[i] = self.mpc_times[i-1] + 0.05
@@ -146,7 +146,6 @@ class PathPlanner(object):
 
     self.plan.send(plan_send.to_bytes())
 
-    #if LOG_MPC:
     dat = messaging.new_message()
     dat.init('liveMpc')
     dat.liveMpc.x = list(self.mpc_solution[0].x)
