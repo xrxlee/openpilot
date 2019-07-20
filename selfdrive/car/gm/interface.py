@@ -97,6 +97,7 @@ class CarInterface(object):
     ret.lateralTuning.pid.kf = 0.00004   # full torque for 20 deg at 80mph means 0.00007818594
     ret.lateralTuning.pid.dampTime = 0.1
     ret.lateralTuning.pid.reactMPC = 0.1
+    ret.lateralTuning.pid.dampMPC = 0.25
     ret.lateralTuning.pid.rateFFGain = 0.2
     ret.lateralTuning.pid.polyFactor = 0.01
     ret.lateralTuning.pid.polyDampTime = 0.05
