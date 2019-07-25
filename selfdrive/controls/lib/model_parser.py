@@ -29,6 +29,7 @@ class ModelParser(object):
       #p_poly = np.array(md.path.poly)
       p_poly = np.array(self.d_poly)
       p_poly[3] = 0.0
+      p_poly[2] = 0.0
     else:
       l_poly = model_polyfit(md.leftLane.points, self._path_pinv)  # left line
       r_poly = model_polyfit(md.rightLane.points, self._path_pinv)  # right line
@@ -58,7 +59,7 @@ class ModelParser(object):
 
     # compute target path
     self.d_poly, self.c_poly, self.c_prob = calc_desired_path(
-      l_poly, r_poly, p_poly l_prob, r_prob, p_prob, v_ego, self.lane_width)
+      l_poly, r_poly, p_poly, l_prob, r_prob, p_prob, v_ego, self.lane_width)
 
     self.r_poly = r_poly
     self.r_prob = r_prob
