@@ -608,7 +608,7 @@ class CarInterface(object):
          (enable_pressed and get_events(events, [ET.NO_ENTRY])):
         events.append(create_event('buttonEnable', [ET.ENABLE]))
         self.last_enable_sent = cur_time
-      elif ret.cruiseState.enabled and self.CS.auto_resume:
+      elif ret.cruiseState.enabled and self.CS.auto_resume and not ret.brakePressed:
         events.append(create_event('buttonEnable', [ET.ENABLE]))
     elif enable_pressed:
       events.append(create_event('buttonEnable', [ET.ENABLE]))

@@ -93,7 +93,7 @@ class CarController(object):
     # Send CAN commands.
     can_sends = []
     canbus = self.canbus
-    
+
     alert_out = process_hud_alert(hud_alert)
     steer = alert_out
 
@@ -103,7 +103,7 @@ class CarController(object):
     ### STEER ###
 
     if (frame % P.STEER_STEP) == 0:
-      lkas_enabled = enabled and not CS.steer_not_allowed and CS.lkMode and CS.v_ego > P.MIN_STEER_SPEED and not CS.left_blinker_on and not CS.right_blinker_on
+      lkas_enabled = enabled and not CS.steer_not_allowed and CS.lkMode and CS.v_ego > P.MIN_STEER_SPEED
       if lkas_enabled:
         apply_steer = actuators.steer * P.STEER_MAX
         apply_steer = apply_std_steer_torque_limits(apply_steer, self.apply_steer_last, CS.steer_torque_driver, P)
@@ -163,7 +163,7 @@ class CarController(object):
         if self.fcw_count > 0:
           self.fcw_count -= 1
           send_fcw = 0x3
-        can_sends.append(gmcan.create_acc_dashboard_command(self.packer_pt, canbus.powertrain, enabled, 
+        can_sends.append(gmcan.create_acc_dashboard_command(self.packer_pt, canbus.powertrain, enabled,
                                                            hud_v_cruise * CV.MS_TO_KPH, hud_show_car, follow_level, send_fcw))
 
       # Radar needs to know current speed and yaw rate (50hz),
