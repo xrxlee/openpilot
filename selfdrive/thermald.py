@@ -114,7 +114,7 @@ def check_car_battery_voltage(should_start, health, charging_disabled, msg):
   #   - 12V battery voltage is too low, and;
   #   - onroad isn't started
   #   - keep battery within 67-70% State of Charge to preserve longevity
-  print health  # print car battery voltage status
+  #print health  # print car battery voltage status
 
   if charging_disabled and (health is None or health.health.voltage > (int(kegman.conf['carVoltageMinEonShutdown'])+500)) and msg.thermal.batteryPercent < int(kegman.conf['battChargeMin']):
     charging_disabled = False
